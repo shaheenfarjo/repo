@@ -23,6 +23,13 @@ export function Footer() {
     return () => clearInterval(interval)
   }, [])
 
+  // Updated to include your actual social URLs
+  const socialLinks = [
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/shaheenfarjo" },
+    { name: "GitHub", url: "https://github.com/shaheenfarjo" },
+    { name: "Twitter", url: "https://x.com/shaheenfarjo" },
+  ]
+
   return (
     <footer className="relative">
       {/* Main CTA */}
@@ -78,20 +85,22 @@ export function Footer() {
 
           {/* Links */}
           <div className="flex gap-8">
-            {["LinkedIn", "GitHub", "Twitter"].map((link) => (
+            {socialLinks.map((link) => (
               <a
-                key={link}
-                href="#"
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 data-cursor-hover
                 className="font-mono text-xs tracking-widest text-muted-foreground hover:text-white transition-colors duration-300"
               >
-                {link}
+                {link.name}
               </a>
             ))}
           </div>
 
           {/* Copyright */}
-          <p className="font-mono text-xs tracking-widest text-muted-foreground">© {new Date().getFullYear()}</p>
+          <p className="font-mono text-xs tracking-widest text-muted-foreground">© 2003 - {new Date().getFullYear()}</p>
         </div>
       </div>
     </footer>
