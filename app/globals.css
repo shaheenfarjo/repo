@@ -76,8 +76,9 @@
 }
 
 @theme inline {
-  --font-sans: "Playfair Display", "Georgia", serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+  --font-sans: var(--font-playfair), "Playfair Display", "Georgia", serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", monospace;
+  --font-arabic: var(--font-naskh), "Noto Naskh Arabic", serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -120,8 +121,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    background: #050505;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#050505] text-foreground;
+  }
+  :focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 4px;
   }
 }
 
@@ -183,4 +191,41 @@
 
 .animate-marquee-right {
   animation: marquee-right 50s linear infinite;
+}
+
+.marquee-item {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
+}
+
+.marquee-item:hover {
+  color: #fff;
+  -webkit-text-stroke-color: transparent;
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-left,
+  .animate-marquee-right {
+    animation-duration: 200s;
+  }
+
+  .animate-ping,
+  .animate-pulse {
+    animation: none;
+  }
 }

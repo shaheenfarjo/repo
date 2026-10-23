@@ -1,7 +1,9 @@
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
+import { Manifesto } from "@/components/manifesto"
 import { About } from "@/components/about"
 import { Works } from "@/components/works"
+import { Capabilities } from "@/components/capabilities"
 import { TechMarquee } from "@/components/tech-marquee"
 import { Footer } from "@/components/footer"
 import { CustomCursor } from "@/components/custom-cursor"
@@ -13,14 +15,16 @@ export default function Home() {
     <SmoothScroll>
       <CustomCursor />
       <Navbar />
-      <main>
+      <main id="main">
         <Hero />
         <SectionBlend />
+        <Manifesto />
         <About />
         <Works />
+        <Capabilities />
         <TechMarquee />
-        <Footer />
       </main>
+      <Footer />
     </SmoothScroll>
   )
 }

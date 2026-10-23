@@ -8,12 +8,13 @@ import type { Mesh, ShaderMaterial } from "three"
 function Sphere() {
   const meshRef = useRef<Mesh>(null)
   const materialRef = useRef<ShaderMaterial>(null)
-  const { pointer } = useThree()
+  const { pointer, viewport } = useThree()
+  // Shrink on narrow (portrait) screens so the sphere sits behind the text instead of swallowing it
+  const scale = Math.min(1, viewport.width / 4.6)
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uMouse: { value: [0, 0] },
     }),
     [],
   )
@@ -104,7 +105,6 @@ function Sphere() {
   useFrame((state, delta) => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value += delta
-      materialRef.current.uniforms.uMouse.value = [pointer.x, pointer.y]
     }
 
     if (meshRef.current) {
@@ -115,7 +115,7 @@ function Sphere() {
   })
 
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} scale={scale}>
       <icosahedronGeometry args={[1.8, 64]} />
       <shaderMaterial
         ref={materialRef}
@@ -130,32 +130,35 @@ function Sphere() {
 }
 
 export function SentientSphere() {
-  const [mounted, setMounted] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [inView, setInView] = useState(true)
+  const [reducedMotion, setReducedMotion] = useState(false)
 
+  // Stop rendering frames once the hero has scrolled away, and freeze for reduced motion
   useEffect(() => {
-    setMounted(true)
+    const element = containerRef.current
+    if (!element) return
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting))
+    observer.observe(element)
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return () => observer.disconnect()
   }, [])
 
-  if (!mounted) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="w-64 h-64 rounded-full border border-white/10 animate-pulse" />
-      </div>
-    )
-  }
-
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 45 }}
-      className="w-full my-0 h-full py-0"
-      dpr={[1, 2]}
-      gl={{
-        antialias: true,
-        alpha: true,
-      }}
-    >
-      <ambientLight intensity={0.5} />
-      <Sphere />
-    </Canvas>
+    <div ref={containerRef} className="w-full h-full">
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        className="w-full h-full"
+        dpr={[1, 2]}
+        frameloop={inView && !reducedMotion ? "always" : "demand"}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "low-power",
+        }}
+      >
+        <Sphere />
+      </Canvas>
+    </div>
   )
 }

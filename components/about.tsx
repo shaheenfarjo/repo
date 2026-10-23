@@ -1,66 +1,50 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
-
-const statements = [
-  "I build products that merge technical innovation with human-centric impact.",
-  "I design systems that empower communities to adapt and evolve.",
-  "Whether in software or social entrepreneurship, the best solutions feel inevitable.",
-  "Every interaction is an opportunity to connect global perspectives with local roots.",
-  "Code is crystallized thought—and a relentless catalyst for change.",
-]
+import { motion } from "framer-motion"
+import { about } from "@/lib/site"
+import { SectionHeader } from "./section-header"
 
 export function About() {
-  const containerRef = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"])
-  const smoothX = useSpring(x, { stiffness: 100, damping: 30 })
-
   return (
-    <section ref={containerRef} className="relative py-32 overflow-hidden md:py-0">
-      {/* Section Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="px-8 md:px-12 mb-0 py-20"
-      >
-        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">03 — PHILOSOPHY</p>
-        <h2 className="font-sans text-3xl md:text-5xl font-light italic">Stream of Consciousness</h2>
-      </motion.div>
+    <section id="about" aria-labelledby="about-title" className="relative px-6 md:px-12 py-24 md:py-32 scroll-mt-20">
+      <SectionHeader index="01" label="ABOUT" title="Global standards, local roots" id="about-title" />
 
-      {/* Horizontal Scroll Container */}
-      <div className="relative flex items-center overflow-hidden py-0 gap-0 h-16">
-        <motion.div style={{ x: smoothX }} className="flex gap-16 md:gap-24 px-8 md:px-12 whitespace-nowrap">
-          {statements.map((statement, index) => (
-            <motion.p
-              key={index}
-              className="text-4xl md:text-6xl lg:text-7xl font-sans font-light tracking-tight text-white/90"
-              style={{
-                WebkitTextStroke: index % 2 === 0 ? "none" : "1px rgba(255,255,255,0.3)",
-                color: index % 2 === 0 ? "inherit" : "transparent",
-              }}
-            >
-              {statement}
-            </motion.p>
-          ))}
+      <div className="grid gap-16 md:grid-cols-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="md:col-span-7"
+        >
+          <p className="font-sans text-2xl md:text-4xl font-light leading-snug tracking-tight text-balance">{about.intro}</p>
+          <div className="mt-10 space-y-6 max-w-2xl">
+            {about.body.map((paragraph) => (
+              <p key={paragraph} className="text-base md:text-lg leading-relaxed text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </motion.div>
-      </div>
 
-      {/* Decorative Line */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="mt-16 mx-8 md:mx-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent origin-left"
-      />
+        <motion.dl
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="md:col-span-4 md:col-start-9 self-end"
+        >
+          {about.facts.map((fact) => (
+            <div key={fact.label} className="flex items-baseline justify-between gap-6 border-t border-white/10 py-5">
+              <dt className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase shrink-0">
+                {fact.label}
+              </dt>
+              <dd className="font-sans text-lg text-right">{fact.value}</dd>
+            </div>
+          ))}
+          <div className="border-t border-white/10" />
+        </motion.dl>
+      </div>
     </section>
   )
 }
