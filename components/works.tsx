@@ -1,152 +1,93 @@
 "use client"
 
-import type React from "react"
+import { motion } from "framer-motion"
+import { ArrowUpRight } from "lucide-react"
+import { projects, type Project } from "@/lib/site"
+import { SectionHeader } from "./section-header"
 
-import { useState, useRef } from "react"
-import { motion, useMotionValue, useSpring } from "framer-motion"
-
-const projects = [
-  {
-    title: "Neural Interface",
-    tags: ["Next.js", "OpenAI", "WebGL"],
-    image: "/abstract-neural-network-visualization-dark-theme.jpg",
-    year: "2024",
-  },
-  {
-    title: "Quantum Dashboard",
-    tags: ["React", "D3.js", "Python"],
-    image: "/futuristic-data-dashboard-dark-minimal.jpg",
-    year: "2024",
-  },
-  {
-    title: "Synthetic Memory",
-    tags: ["TypeScript", "LangChain", "Vector DB"],
-    image: "/abstract-memory-storage-visualization.jpg",
-    year: "2023",
-  },
-  {
-    title: "Echo Protocol",
-    tags: ["Rust", "WebAssembly", "Audio"],
-    image: "/sound-wave-visualization-dark-theme.jpg",
-    year: "2023",
-  },
-]
-
-export function Works() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 })
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 })
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      mouseX.set(e.clientX - rect.left)
-      mouseY.set(e.clientY - rect.top)
-    }
-  }
-
-  return (
-    <section className="relative py-32 px-8 md:px-12 md:py-24">
-      {/* Section Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="mb-24"
-      >
-        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">04 — SELECTED WORKS</p>
-        <h2 className="font-sans text-3xl md:text-5xl font-light italic">The Distortion Gallery</h2>
-      </motion.div>
-
-      {/* Projects List */}
-      <div ref={containerRef} onMouseMove={handleMouseMove} className="relative">
-        {projects.map((project, index) => (
-          <motion.div
-            key={project.title}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.1 }}
-            className="relative border-t border-white/10 py-8 md:py-12"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            <a
-              href="#"
-              data-cursor-hover
-              className="group flex flex-col md:flex-row md:items-center justify-between gap-4"
-            >
-              {/* Year */}
-              <span className="font-mono text-xs text-muted-foreground tracking-widest order-1 md:order-none">
-                {project.year}
-              </span>
-
-              {/* Title */}
-              <motion.h3
-                className="font-sans text-4xl md:text-6xl lg:text-7xl font-light tracking-tight group-hover:text-white/70 transition-colors duration-300 flex-1"
-                animate={{
-                  x: hoveredIndex === index ? 20 : 0,
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
-                {project.title}
-              </motion.h3>
-
-              {/* Tags */}
-              <div className="flex gap-2 flex-wrap order-2 md:order-none">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-[10px] tracking-wider px-3 py-1 border border-white/20 rounded-full text-muted-foreground"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </a>
-          </motion.div>
-        ))}
-
-        {/* Floating Image */}
-        <motion.div
-          className="absolute pointer-events-none z-50 w-64 h-40 md:w-80 md:h-48 overflow-hidden rounded-lg"
-          style={{
-            x: springX,
-            y: springY,
-            translateX: "-50%",
-            translateY: "-320%",
-          }}
-          animate={{
-            opacity: hoveredIndex !== null ? 1 : 0,
-            scale: hoveredIndex !== null ? 1 : 0.8,
-          }}
-          transition={{ duration: 0.2 }}
-        >
-          {hoveredIndex !== null && (
-            <motion.img
-              src={projects[hoveredIndex].image}
-              alt={projects[hoveredIndex].title}
-              className="w-full h-full object-cover"
-              initial={{ scale: 1.2 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                filter: "grayscale(50%) contrast(1.1)",
-              }}
-            />
-          )}
-          {/* Glitch overlay */}
-          <div className="absolute inset-0 bg-[#2563eb]/10 mix-blend-overlay" />
-        </motion.div>
+function ProjectRow({ project, index }: { project: Project; index: number }) {
+  const content = (
+    <div className="grid gap-4 md:grid-cols-12 md:items-baseline">
+      {/* Index + year */}
+      <div className="md:col-span-2 flex md:flex-col gap-3 md:gap-2 font-mono text-xs text-muted-foreground tracking-widest">
+        <span className="text-accent">0{index + 1}</span>
+        <span>{project.year}</span>
       </div>
 
-      {/* Bottom Border */}
+      {/* Title */}
+      <div className="md:col-span-5">
+        <h3 className="font-sans text-4xl md:text-6xl font-light tracking-tight transition-transform duration-500 ease-out md:group-hover:translate-x-5 flex items-baseline gap-4 flex-wrap">
+          {project.title}
+          {project.arabic && (
+            <span lang="ar" dir="rtl" className="font-arabic text-2xl md:text-3xl text-white/30">
+              {project.arabic}
+            </span>
+          )}
+          {project.href && (
+            <ArrowUpRight
+              aria-hidden="true"
+              className="w-6 h-6 md:w-8 md:h-8 self-center text-white/40 transition-all duration-500 group-hover:text-accent group-hover:rotate-45"
+            />
+          )}
+        </h3>
+        <p className="mt-2 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">{project.role}</p>
+      </div>
+
+      {/* Description + tags */}
+      <div className="md:col-span-5">
+        <p className="text-base leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+          {project.description}
+        </p>
+        <ul className="mt-4 flex gap-2 flex-wrap" aria-label="Tags">
+          {project.tags.map((tag) => (
+            <li
+              key={tag}
+              className="font-mono text-[10px] tracking-wider px-3 py-1 border border-white/20 rounded-full text-muted-foreground"
+            >
+              {tag}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+
+  return (
+    <motion.li
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: index * 0.1 }}
+      className="relative border-t border-white/10"
+    >
+      {project.href ? (
+        <a
+          href={project.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor-hover
+          className="group block py-10 md:py-14"
+        >
+          {content}
+        </a>
+      ) : (
+        <div className="group py-10 md:py-14">{content}</div>
+      )}
+    </motion.li>
+  )
+}
+
+export function Works() {
+  return (
+    <section id="work" aria-labelledby="work-title" className="relative py-24 px-6 md:px-12 md:py-32 scroll-mt-20">
+      <SectionHeader index="02" label="SELECTED WORK" title="Things I wish existed" id="work-title" />
+
+      <ul>
+        {projects.map((project, index) => (
+          <ProjectRow key={project.title} project={project} index={index} />
+        ))}
+      </ul>
+
       <div className="border-t border-white/10" />
     </section>
   )

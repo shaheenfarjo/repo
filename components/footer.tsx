@@ -3,42 +3,49 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
+import { site } from "@/lib/site"
 
-export function Footer() {
-  const [time, setTime] = useState("")
-  const [isHovered, setIsHovered] = useState(false)
+const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: site.timeZone,
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+})
+
+function BaghdadTime() {
+  const [time, setTime] = useState<string | null>(null)
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date()
-      const hours = now.getHours().toString().padStart(2, "0")
-      const minutes = now.getMinutes().toString().padStart(2, "0")
-      const seconds = now.getSeconds().toString().padStart(2, "0")
-      const milliseconds = now.getMilliseconds().toString().padStart(3, "0")
-      setTime(`${hours}:${minutes}:${seconds}.${milliseconds}`)
-    }
-
-    updateTime()
-    const interval = setInterval(updateTime, 10)
+    const update = () => setTime(timeFormatter.format(new Date()))
+    update()
+    const interval = setInterval(update, 1000)
     return () => clearInterval(interval)
   }, [])
 
-  // Updated to include your actual social URLs
-  const socialLinks = [
-    { name: "LinkedIn", url: "https://www.linkedin.com/in/shaheenfarjo" },
-    { name: "GitHub", url: "https://github.com/shaheenfarjo" },
-    { name: "Twitter", url: "https://x.com/shaheenfarjo" },
-  ]
+  return (
+    <div className="font-mono text-xs tracking-widest text-muted-foreground">
+      <span className="mr-2">BAGHDAD</span>
+      <span className="text-white tabular-nums">{time ?? "--:--:--"}</span>
+      <span className="ml-2">GMT+3</span>
+    </div>
+  )
+}
+
+export function Footer() {
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <footer className="relative">
+    <footer id="contact" className="relative scroll-mt-20">
       {/* Main CTA */}
       <motion.a
-        href="mailto:hello@shaheenfarjo.com"
+        href={`mailto:${site.email}`}
         data-cursor-hover
-        className="relative block overflow-hidden"
+        className="group relative block overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={() => setIsHovered(false)}
       >
         {/* Background Curtain */}
         <motion.div
@@ -49,17 +56,31 @@ export function Footer() {
         />
 
         {/* Content */}
-        <div className="relative py-16 md:py-24 px-8 md:px-12 border-t border-white/10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <motion.h2
-              className="font-sans text-4xl md:text-6xl lg:text-8xl font-light tracking-tight text-center md:text-left"
-              animate={{
-                color: isHovered ? "#050505" : "#fafafa",
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              Let's <span className="italic">Collaborate</span>
-            </motion.h2>
+        <div className="relative py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
+          <motion.p
+            className="font-mono text-xs tracking-[0.3em] mb-6"
+            animate={{ color: isHovered ? "#050505" : "#a1a1a1" }}
+            transition={{ duration: 0.3 }}
+          >
+            05 — CONTACT
+          </motion.p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div>
+              <motion.h2
+                className="font-sans text-5xl md:text-7xl lg:text-8xl font-light tracking-tight"
+                animate={{ color: isHovered ? "#050505" : "#fafafa" }}
+                transition={{ duration: 0.3 }}
+              >
+                Let&apos;s build <span className="italic">something</span>.
+              </motion.h2>
+              <motion.p
+                className="mt-6 font-mono text-sm md:text-base tracking-wider break-all"
+                animate={{ color: isHovered ? "#050505" : "#a1a1a1" }}
+                transition={{ duration: 0.3 }}
+              >
+                {site.email}
+              </motion.p>
+            </div>
 
             <motion.div
               animate={{
@@ -67,6 +88,7 @@ export function Footer() {
                 color: isHovered ? "#050505" : "#fafafa",
               }}
               transition={{ duration: 0.3 }}
+              aria-hidden="true"
             >
               <ArrowUpRight className="w-12 h-12 md:w-16 md:h-16" />
             </motion.div>
@@ -75,32 +97,29 @@ export function Footer() {
       </motion.a>
 
       {/* Footer Info */}
-      <div className="px-8 md:px-12 py-8 border-t border-white/10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Local Time */}
-          <div className="font-mono text-xs tracking-widest text-muted-foreground">
-            <span className="mr-2">LOCAL TIME</span>
-            <span className="text-white tabular-nums">{time}</span>
-          </div>
+      <div className="px-6 md:px-12 py-8 border-t border-white/10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <BaghdadTime />
 
-          {/* Links */}
-          <div className="flex gap-8">
-            {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-cursor-hover
-                className="font-mono text-xs tracking-widest text-muted-foreground hover:text-white transition-colors duration-300"
-              >
-                {link.name}
-              </a>
+          <ul className="flex gap-8">
+            {site.socials.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  data-cursor-hover
+                  className="font-mono text-xs tracking-widest text-muted-foreground hover:text-white transition-colors duration-300"
+                >
+                  {link.name.toUpperCase()}
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          {/* Copyright */}
-          <p className="font-mono text-xs tracking-widest text-muted-foreground">© 2003 - {new Date().getFullYear()}</p>
+          <p className="font-mono text-xs tracking-widest text-muted-foreground">
+            © 2003 — {new Date().getFullYear()} {site.name.toUpperCase()}
+          </p>
         </div>
       </div>
     </footer>
