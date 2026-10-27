@@ -1,119 +1,53 @@
-"use client"
+import { whatsappUrl, type Content } from "@/lib/content"
+import { Arrow, buttonPrimary, container } from "./ui"
 
-import { useRef } from "react"
-import dynamic from "next/dynamic"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useLenis } from "lenis/react"
-import { site } from "@/lib/site"
-
-// WebGL is client-only and heavy; keep it out of the initial bundle
-const SentientSphere = dynamic(() => import("./sentient-sphere").then((mod) => mod.SentientSphere), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="w-64 h-64 rounded-full border border-white/10 animate-pulse" />
-    </div>
-  ),
-})
-
-const ease = [0.25, 0.46, 0.45, 0.94] as const
-
-export function Hero() {
-  const containerRef = useRef<HTMLElement>(null)
-  const lenis = useLenis()
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
-
-  const explore = () => {
-    if (lenis) lenis.scrollTo("#about", { offset: -80 })
-    else document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })
-  }
-
+// The brand's only graphic: three blocks rising Build → Prove → Grow.
+// Flex order follows the document direction, so it mirrors in RTL on its own.
+function RisingBlocks({ labels, label }: { labels: Content["hero"]["blocks"]; label: string }) {
+  const blocks = [
+    { color: "bg-brand-navy", height: "h-24 md:h-32", delay: "0ms" },
+    { color: "bg-brand-teal", height: "h-36 md:h-52", delay: "120ms" },
+    { color: "bg-brand-gold", height: "h-48 md:h-72", delay: "240ms" },
+  ]
   return (
-    <section ref={containerRef} className="relative h-svh min-h-[600px] w-full overflow-hidden bg-[#050505]">
-      {/* 3D Sphere Background */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <SentientSphere />
-      </div>
+    <div role="img" aria-label={label} className="flex w-full max-w-sm items-end gap-4 md:gap-6">
+      {blocks.map((block, index) => (
+        <div key={labels[index]} aria-hidden="true" className="flex flex-1 flex-col gap-2">
+          <div className={`block-rise rounded-card ${block.color} ${block.height}`} style={{ animationDelay: block.delay }} />
+          <span className="t-small text-ink-muted">{labels[index]}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
-      {/* Typography Overlay */}
-      <motion.div
-        style={{ opacity, scale }}
-        className="relative z-10 h-full flex flex-col justify-between px-6 pt-28 pb-24 md:px-12 md:pt-32 md:pb-20"
-      >
-        {/* Top Left */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease }}
-        >
-          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">
-            {site.location.toUpperCase()} — {site.coordinates}
-          </p>
-          <h1 className="font-sans text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-balance leading-[0.95]">
-            Shaheen
-            <br />
-            <span className="italic">K. Farjo</span>
+export function Hero({ t }: { t: Content }) {
+  return (
+    <section aria-labelledby="hero-title" className="py-16 md:py-24">
+      <div className={`${container} grid items-end gap-12 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-16`}>
+        <div>
+          <p className="t-eyebrow mb-6 text-brand-teal">{t.hero.eyebrow}</p>
+          <h1 id="hero-title" className="t-display">
+            {t.hero.headline}
           </h1>
-        </motion.div>
-
-        {/* Center Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.6, ease }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden sm:block"
-        >
-          <motion.button
-            onClick={explore}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative px-8 py-4 border border-white/20 rounded-full font-mono text-sm tracking-widest uppercase bg-transparent backdrop-blur-sm hover:bg-white hover:text-black transition-colors duration-500"
-          >
-            Explore
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#2563eb] rounded-full animate-pulse" />
-          </motion.button>
-        </motion.div>
-
-        {/* Bottom Right */}
-        <motion.div
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, ease }}
-          className="self-end text-right max-w-xl"
-        >
-          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4">ENTREPRENEUR — BUSINESS DEVELOPER</p>
-          <p className="font-sans text-3xl md:text-5xl font-light tracking-tight text-balance">
-            Creating the things I wish existed in <span className="italic">Baghdad</span>.
-          </p>
-          <p lang="ar" dir="rtl" className="font-arabic text-lg md:text-xl text-white/40 mt-4">
-            بغداد
-          </p>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10"
-        aria-hidden="true"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-2"
-        >
-          <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-white/50 to-transparent" />
-        </motion.div>
-      </motion.div>
+          <p className="measure mt-6 text-ink-muted">{t.hero.subline}</p>
+          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-8">
+            <a href={whatsappUrl(t.whatsappGreeting)} target="_blank" rel="noopener noreferrer" className={buttonPrimary}>
+              {t.hero.primary}
+            </a>
+            <a
+              href="#method"
+              className="inline-flex min-h-11 items-center gap-2 font-semibold text-brand-teal underline-offset-4 hover:underline"
+            >
+              {t.hero.secondary}
+              <Arrow />
+            </a>
+          </div>
+        </div>
+        <div className="flex md:justify-end">
+          <RisingBlocks labels={t.hero.blocks} label={t.method} />
+        </div>
+      </div>
     </section>
   )
 }
