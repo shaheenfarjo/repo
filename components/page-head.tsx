@@ -1,22 +1,31 @@
 import Head from "next/head"
-import { contact, content, pagePath, siteUrl, type Lang } from "@/lib/content"
+import { contact, content, en, pagePath, siteUrl, socials, type Lang } from "@/lib/content"
 
 function jsonLd(lang: Lang) {
   const t = content[lang]
-  return {
-    "@context": "https://schema.org",
+  const person = {
+    "@type": "Person",
+    "@id": `${siteUrl}/#person`,
+    name: "Shaheen K. Farjo",
+    alternateName: "Shaheen Farjo",
+    jobTitle: "Entrepreneur, Business Developer & Consultant",
+    url: siteUrl,
+    address: { "@type": "PostalAddress", addressLocality: "Baghdad", addressCountry: "IQ" },
+    sameAs: [...socials.map((social) => social.url), contact.aboutMe],
+  }
+  const service = {
     "@type": "ProfessionalService",
-    name: t.name,
-    description: t.meta.description,
-    url: `${siteUrl}${pagePath(lang)}`,
-    inLanguage: lang,
+    "@id": `${siteUrl}/#consulting`,
+    name: "Shaheen K. Farjo — Consulting",
+    description: t.consulting.lead,
+    url: `${siteUrl}${pagePath(lang)}#consulting`,
     telephone: contact.phoneE164,
     email: contact.email,
     areaServed: { "@type": "Country", name: "Iraq" },
     address: { "@type": "PostalAddress", addressLocality: "Baghdad", addressCountry: "IQ" },
-    founder: { "@type": "Person", name: content.en.name, jobTitle: content.en.descriptor },
-    sameAs: [contact.linkedin],
+    founder: { "@id": `${siteUrl}/#person` },
   }
+  return { "@context": "https://schema.org", "@graph": [person, service] }
 }
 
 export function PageHead({ lang }: { lang: Lang }) {
@@ -29,16 +38,13 @@ export function PageHead({ lang }: { lang: Lang }) {
       <title>{t.meta.title}</title>
       <meta name="description" content={t.meta.description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" key="viewport" />
-      <meta name="color-scheme" content="light dark" />
-      <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F5F0" />
-      <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141B2B" />
       <link rel="canonical" href={url} />
       <link rel="alternate" hrefLang="en" href={`${siteUrl}/`} />
       <link rel="alternate" hrefLang="ar" href={`${siteUrl}/ar`} />
       <link rel="alternate" hrefLang="x-default" href={`${siteUrl}/`} />
 
-      <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={t.name} />
+      <meta property="og:type" content="profile" />
+      <meta property="og:site_name" content={en.name} />
       <meta property="og:url" content={url} />
       <meta property="og:title" content={t.meta.title} />
       <meta property="og:description" content={t.meta.description} />
@@ -47,8 +53,9 @@ export function PageHead({ lang }: { lang: Lang }) {
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content={`${t.name} — ${t.method}`} />
+      <meta property="og:image:alt" content={`${en.name} — ${en.hero.role}`} />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content="@shaheenfarjo" />
       <meta name="twitter:title" content={t.meta.title} />
       <meta name="twitter:description" content={t.meta.description} />
       <meta name="twitter:image" content={ogImage} />

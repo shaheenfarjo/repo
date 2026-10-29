@@ -1,51 +1,52 @@
-import { whatsappUrl, type Content } from "@/lib/content"
-import { Arrow, buttonPrimary, container } from "./ui"
-
-// The brand's only graphic: three blocks rising Build → Prove → Grow.
-// Flex order follows the document direction, so it mirrors in RTL on its own.
-function RisingBlocks({ labels, label }: { labels: Content["hero"]["blocks"]; label: string }) {
-  const blocks = [
-    { color: "bg-brand-navy", height: "h-24 md:h-32", delay: "0ms" },
-    { color: "bg-brand-teal", height: "h-36 md:h-52", delay: "120ms" },
-    { color: "bg-brand-gold", height: "h-48 md:h-72", delay: "240ms" },
-  ]
-  return (
-    <div role="img" aria-label={label} className="flex w-full max-w-sm items-end gap-4 md:gap-6">
-      {blocks.map((block, index) => (
-        <div key={labels[index]} aria-hidden="true" className="flex flex-1 flex-col gap-2">
-          <div className={`block-rise rounded-card ${block.color} ${block.height}`} style={{ animationDelay: block.delay }} />
-          <span className="t-small text-ink-muted">{labels[index]}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
+import { coordinates, whatsappUrl, type Content } from "@/lib/content"
+import { Rich } from "@/lib/rich"
+import { container, external } from "./ui"
 
 export function Hero({ t }: { t: Content }) {
+  const h = t.hero
+  const workButton = (
+    <a key="work" href="#work" className="btn btn-ghost t-button">
+      {h.work}
+    </a>
+  )
+  const callButton = (
+    <a key="call" href={whatsappUrl(t.whatsappGreeting)} {...external} className="btn btn-solid t-button">
+      {h.call}
+    </a>
+  )
+
   return (
-    <section aria-labelledby="hero-title" className="py-16 md:py-24">
-      <div className={`${container} grid items-end gap-12 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-16`}>
+    <section aria-labelledby="hero-name" className="relative overflow-hidden">
+      {/* The sphere: decorative, filled in by /sphere.js after the page is idle */}
+      <div
+        aria-hidden="true"
+        data-sphere
+        className="sphere-stage pointer-events-none absolute start-1/2 top-[58%] aspect-square w-[680px] -translate-x-1/2 -translate-y-1/2 rtl:translate-x-1/2 md:top-1/2 md:w-[900px]"
+      />
+
+      <div className={`${container} relative flex min-h-[calc(100svh-4rem)] flex-col justify-between gap-16 pt-16 pb-16 md:pt-20 md:pb-20`}>
         <div>
-          <p className="t-eyebrow mb-6 text-brand-teal">{t.hero.eyebrow}</p>
-          <h1 id="hero-title" className="t-display">
-            {t.hero.headline}
+          <p className="t-label mb-6 text-muted">
+            {h.location} — <span className="t-num" dir="ltr">{coordinates}</span>
+          </p>
+          <h1 id="hero-name" className="t-name">
+            {h.nameFirst}
+            <br />
+            <em>{h.nameRest}</em>
           </h1>
-          <p className="measure mt-6 text-ink-muted">{t.hero.subline}</p>
-          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-8">
-            <a href={whatsappUrl(t.whatsappGreeting)} target="_blank" rel="noopener noreferrer" className={buttonPrimary}>
-              {t.hero.primary}
-            </a>
-            <a
-              href="#method"
-              className="inline-flex min-h-11 items-center gap-2 font-semibold text-brand-teal underline-offset-4 hover:underline"
-            >
-              {t.hero.secondary}
-              <Arrow />
-            </a>
-          </div>
         </div>
-        <div className="flex md:justify-end">
-          <RisingBlocks labels={t.hero.blocks} label={t.method} />
+
+        <div className="max-w-xl md:self-end md:text-end">
+          <p className="t-label mb-4 text-muted">{h.role}</p>
+          <p className="t-tagline">
+            <Rich text={h.tagline} />
+          </p>
+          <p lang={t.lang === "en" ? "ar" : "en"} className="t-label mt-4 text-faint">
+            {h.cityAside}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 md:justify-end">
+            {t.lang === "ar" ? [callButton, workButton] : [workButton, callButton]}
+          </div>
         </div>
       </div>
     </section>
