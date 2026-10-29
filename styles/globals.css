@@ -1,73 +1,52 @@
 @import "tailwindcss";
 
-/* Brand tokens. Components use these through the Tailwind theme below, never raw hex values. */
+/* Theme tokens. Light is the default; [data-theme="dark"] on <html> brings back the
+   original dark look. Monochrome only: the accent is the ink color itself. */
 :root {
   color-scheme: light;
-  --surface-100: #f7f5f0;
-  --surface-200: #ece8df;
-  --ink: #1f2a44;
-  --ink-muted: #5b6475;
-  --hairline: #d8d2c4;
-  --brand-navy: #1f2a44;
-  --on-navy: #f7f5f0;
-  --brand-teal: #2f6f73;
-  --brand-gold: #d9a84e;
-  /* Text on teal fills. Paper in light mode; in dark mode paper on the lighter teal is only 2.5:1, so it flips to the dark surface (6.4:1). */
-  --on-teal: #f7f5f0;
+  --bg: #fafaf9;
+  --surface: #f1f1ef;
+  --ink: #0b0b0c;
+  --muted: #56565b;
+  /* #6E6E73 from the brief is 4.48:1 on --surface; one step darker passes AA (4.83:1) */
+  --faint: #69696e;
+  --hairline: #e0e0dd;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --surface-100: #141b2b;
-    --surface-200: #1e2740;
-    --ink: #f2efe8;
-    --ink-muted: #aeb6c6;
-    --hairline: #2e3852;
-    --brand-navy: #2b3a5c;
-    --on-navy: #f7f5f0;
-    --brand-teal: #5fa8ac;
-    --brand-gold: #d9a84e;
-    --on-teal: #141b2b;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0a0b;
+  --surface: #111113;
+  --ink: #f4f4f2;
+  --muted: #a3a3a8;
+  --faint: #8b8b91;
+  --hairline: #26262a;
 }
 
-/* Metric-matched stand-in shown while IBM Plex Sans Arabic loads, so the swap doesn't shift layout */
-@font-face {
-  font-family: "IBM Plex Sans Arabic Fallback";
-  src: local("Arial"), local("ArialMT");
-  ascent-override: 107.25%;
-  descent-override: 41.02%;
-  line-gap-override: 0%;
-  size-adjust: 101.17%;
-}
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
-  /* --font-plex-latin and --font-plex-arabic come from next/font (lib/fonts); each covers its own unicode range */
-  --font-sans:
-    var(--font-plex-latin), var(--font-plex-arabic), "IBM Plex Sans Arabic", "IBM Plex Sans", "IBM Plex Sans Arabic Fallback",
-    Arial, Tahoma, sans-serif;
+  /* --font-serif, --font-mono and --font-sans are set by next/font (lib/fonts).
+     The type role classes below name their own stacks; font-body is the page default. */
+  --font-*: initial;
+  --font-body: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
 
   --color-*: initial;
-  --color-surface-100: var(--surface-100);
-  --color-surface-200: var(--surface-200);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
   --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-hairline: var(--hairline);
-  --color-brand-navy: var(--brand-navy);
-  --color-on-navy: var(--on-navy);
-  --color-brand-teal: var(--brand-teal);
-  --color-brand-gold: var(--brand-gold);
-  --color-on-teal: var(--on-teal);
   --color-transparent: transparent;
   --color-current: currentColor;
 
   --radius-*: initial;
-  --radius-tag: 4px;
-  --radius-card: 8px;
-  --radius-panel: 16px;
+  --radius-pill: 999px;
 
   --shadow-*: initial;
+
+  --breakpoint-nav: 1000px;
 }
 
 @layer base {
@@ -76,7 +55,7 @@
   }
 
   html {
-    background: var(--surface-100);
+    background: var(--bg);
     -webkit-text-size-adjust: 100%;
   }
 
@@ -87,38 +66,20 @@
   }
 
   body {
-    background: var(--surface-100);
+    background: var(--bg);
     color: var(--ink);
-    font-weight: 400;
-    font-size: 17px;
-    line-height: 1.6;
-  }
-
-  body:lang(ar) {
-    line-height: 1.8;
-  }
-
-  @media (min-width: 768px) {
-    body {
-      font-size: 18px;
-    }
-  }
-
-  h1,
-  h2,
-  h3 {
-    font-weight: 600;
-    text-wrap: balance;
+    font-size: 16px;
+    line-height: 1.75;
   }
 
   :focus-visible {
-    outline: 2px solid var(--brand-teal);
-    outline-offset: 2px;
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
   }
 
   ::selection {
-    background: var(--brand-teal);
-    color: var(--on-teal);
+    background: var(--ink);
+    color: var(--bg);
   }
 
   summary {
@@ -129,103 +90,251 @@
   summary::-webkit-details-marker {
     display: none;
   }
+
+  /* The one emphasized phrase per heading: italic in Latin, weight 600 in Arabic */
+  em {
+    font-style: italic;
+  }
+
+  em:lang(ar) {
+    font-style: normal;
+    font-weight: 600;
+  }
 }
 
-/* Type scale from the brand system. Hierarchy comes only from size and weight. */
+/* Type roles from the brief. Arabic overrides use :lang(ar), so Arabic words
+   inside the English page (and vice versa) get the right treatment too. */
 @layer components {
-  .t-display {
-    font-size: 36px;
-    font-weight: 600;
-    line-height: 1.1;
+  .t-name {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(64px, 9.5vw, 140px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+
+  .t-tagline {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(34px, 3.6vw, 54px);
+    line-height: 1.08;
     text-wrap: balance;
   }
 
   .t-h2 {
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.2;
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(40px, 4.6vw, 68px);
+    line-height: 1.04;
     text-wrap: balance;
+  }
+
+  .t-lead {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.1vw, 30px);
+    line-height: 1.38;
+    max-width: 36ch;
+    text-wrap: pretty;
   }
 
   .t-h3 {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.3;
+    font-family: var(--font-serif-text), Georgia, serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.15;
     text-wrap: balance;
   }
 
-  .t-small {
-    font-size: 14px;
-    line-height: 1.5;
+  .t-work {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(36px, 3.8vw, 56px);
+    line-height: 1.05;
   }
 
-  .t-eyebrow {
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: 0.12em;
+  .t-big {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 104px);
+    line-height: 1;
+  }
+
+  .t-body {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .t-label,
+  .t-chip,
+  .t-button {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-weight: 400;
     text-transform: uppercase;
+    line-height: 1.3;
   }
 
-  .t-display:lang(ar) {
-    line-height: 1.35;
+  .t-label {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .t-chip {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
+  .t-button {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  /* Numbers, dates and coordinates stay in Plex Mono in both languages */
+  .t-num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  .t-name:lang(ar) {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    font-size: clamp(60px, 8.5vw, 128px);
+    line-height: 1.15;
+    letter-spacing: 0;
+  }
+
+  .t-tagline:lang(ar),
+  .t-h2:lang(ar),
+  .t-lead:lang(ar),
+  .t-work:lang(ar),
+  .t-big:lang(ar) {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    letter-spacing: 0;
+  }
+
+  .t-tagline:lang(ar) {
+    line-height: 1.4;
   }
 
   .t-h2:lang(ar) {
-    line-height: 1.45;
+    line-height: 1.3;
+  }
+
+  .t-lead:lang(ar) {
+    line-height: 1.75;
+  }
+
+  .t-work:lang(ar),
+  .t-big:lang(ar) {
+    line-height: 1.25;
   }
 
   .t-h3:lang(ar) {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    font-weight: 500;
     line-height: 1.5;
   }
 
-  .t-small:lang(ar) {
-    line-height: 1.7;
+  .t-body:lang(ar) {
+    font-size: 17px;
+    line-height: 1.9;
   }
 
-  .t-eyebrow:lang(ar) {
+  .t-label:lang(ar),
+  .t-chip:lang(ar) {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    font-size: 14px;
     letter-spacing: 0;
     text-transform: none;
   }
 
-  @media (min-width: 768px) {
-    .t-display {
-      font-size: 56px;
-    }
-
-    .t-h2 {
-      font-size: 36px;
-    }
-
-    .t-h3 {
-      font-size: 22px;
-    }
+  .t-chip:lang(ar) {
+    font-size: 13px;
   }
 
-  .measure {
-    max-width: 65ch;
+  .t-button:lang(ar) {
+    font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
-  .tabular {
-    font-variant-numeric: tabular-nums;
+  .btn {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: var(--radius-pill);
+    padding-inline: 24px;
+    border: 1px solid;
+    transition: border-color 200ms, background-color 200ms, color 200ms;
+  }
+
+  .btn-solid {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .btn-ghost {
+    border-color: var(--hairline);
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--ink);
   }
 }
 
-/* Hero blocks: the brand's only motion, a subtle rise-in that is skipped for reduced motion. */
-@media (prefers-reduced-motion: no-preference) {
-  .block-rise {
-    animation: block-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    transform-origin: bottom;
-  }
+/* Hero sphere. The WebGL canvas is added by /sphere.js once the page is idle;
+   .is-static shows a one-color snapshot instead, tinted by --ink through a mask. */
+.sphere-stage.is-static::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--ink);
+  -webkit-mask: url("/sphere-mask.webp") center / contain no-repeat;
+  mask: url("/sphere-mask.webp") center / contain no-repeat;
 }
 
-@keyframes block-rise {
-  from {
-    opacity: 0;
-    transform: scaleY(0.6);
-  }
+/* Outline marquee */
+.marquee-track {
+  animation: marquee 70s linear infinite;
+}
+
+.marquee-track[data-direction="reverse"] {
+  animation-direction: reverse;
+}
+
+[dir="rtl"] .marquee-track {
+  animation-name: marquee-rtl;
+}
+
+.marquee-item {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--muted);
+}
+
+@keyframes marquee {
   to {
-    opacity: 1;
-    transform: scaleY(1);
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-rtl {
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation-play-state: paused;
   }
 }
