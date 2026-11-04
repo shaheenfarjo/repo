@@ -1,4 +1,4 @@
-import { PrivacyPage } from "@/components/home-page"
+import { PrivacyPage } from "@/components/pages"
 import { plexMono } from "@/lib/fonts/mono"
 import { plexSansPreload } from "@/lib/fonts/sans-preload"
 

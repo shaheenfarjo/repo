@@ -18,7 +18,11 @@ and Arabic (`/ar`).
 - Every page is static HTML with no framework JavaScript
   (`unstable_runtimeJS: false`). The little behavior there is (theme, clock,
   sphere, tools) comes from small inline scripts, and everything works without them.
-- All copy is in `lib/content.ts`, one object per language with the same shape.
+- All copy is in `lib/content/`: `en.ts` and `ar.ts`, one object per language,
+  both following the shape in `types.ts`. Contact details, links and paths are
+  in `site.ts`.
+- `components/pages.tsx` lays out each page from the sections in
+  `components/landing.tsx`, `tools.tsx` and `simple-pages.tsx`.
 - No database, accounts, cookies, or analytics. Tools run in the browser and
   send nothing unless the visitor presses the WhatsApp button.
 

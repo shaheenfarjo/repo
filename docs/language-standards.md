@@ -1,8 +1,8 @@
 # Language standards
 
-All copy lives in `lib/content.ts`. English and Arabic share one shape, and the
-Arabic fully mirrors the English: as much Arabic as English, written to read
-naturally, not translated word for word.
+All copy lives in `lib/content/` (`en.ts`, `ar.ts`). English and Arabic share one
+shape (`types.ts`), and the Arabic fully mirrors the English: as much Arabic as
+English, written to read naturally, not translated word for word.
 
 ## English
 

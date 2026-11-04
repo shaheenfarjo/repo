@@ -1,4 +1,4 @@
-import { ToolsPage } from "@/components/home-page"
+import { ToolsPage } from "@/components/pages"
 import { plexMono } from "@/lib/fonts/mono"
 import { plexSansPreload } from "@/lib/fonts/sans-preload"
 
