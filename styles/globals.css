@@ -338,3 +338,82 @@
     animation-play-state: paused;
   }
 }
+
+/* A2 package chooser: show only the package for the checked answer. Browsers
+   without :has() skip this rule and list every match instead. */
+.chooser:has(input[name="need"]) .chooser-result {
+  display: none;
+}
+
+.chooser:has(input[name="need"][value="0"]:checked) [data-choice="0"],
+.chooser:has(input[name="need"][value="1"]:checked) [data-choice="1"],
+.chooser:has(input[name="need"][value="2"]:checked) [data-choice="2"],
+.chooser:has(input[name="need"][value="3"]:checked) [data-choice="3"],
+.chooser:has(input[name="need"][value="4"]:checked) [data-choice="4"] {
+  display: block;
+}
+
+/* A21: print styles. Printing /consulting gives a one-color services sheet:
+   no header, menu, sphere, marquee or buttons, with link addresses spelled out. */
+.print-only {
+  display: none;
+}
+
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --ink: #000000;
+    --muted: #333333;
+    --faint: #555555;
+    --hairline: #cccccc;
+  }
+
+  header,
+  footer,
+  details[data-menu],
+  [data-sphere],
+  .marquee-track,
+  .btn,
+  .chooser,
+  form,
+  noscript,
+  a[href="#main"] {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  section {
+    padding-block: 24px !important;
+    break-inside: auto;
+  }
+
+  li,
+  article,
+  dl > div {
+    break-inside: avoid;
+  }
+
+  .t-name {
+    font-size: 48px;
+  }
+
+  .t-h2 {
+    font-size: 32px;
+  }
+
+  main a[href^="http"]:not(.btn)::after {
+    content: " (" attr(href) ")";
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  .nav\:sticky {
+    position: static;
+  }
+}

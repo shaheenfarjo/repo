@@ -1,7 +1,7 @@
-import { packageGreeting, whatsappUrl, type Content } from "@/lib/content"
+import { packageGreeting, pagePath, whatsappUrl, type Content } from "@/lib/content"
 import { Rich } from "@/lib/rich"
 import { Section } from "./sections"
-import { BookingLink, SectionLabel, container, external } from "./ui"
+import { BookingLink, RemoteNotice, SectionLabel, container, external } from "./ui"
 
 function Heading({ index, label, title, id }: { index: string; label: string; title: string; id: string }) {
   return (
@@ -24,8 +24,9 @@ export function ConsultingIntro({ t }: { t: Content }) {
           <Rich text={s.title} />
         </h1>
         <p className="t-lead mt-10">{s.lead}</p>
+        <RemoteNotice t={t} className="mt-8 max-w-[62ch]" />
         <div className="mt-10 flex flex-wrap gap-3">
-          <a href={whatsappUrl(t.whatsapp.consulting)} {...external} className="btn btn-solid t-button">
+          <a href={whatsappUrl(t.whatsapp.consulting, pagePath(t.lang, "consulting"))} {...external} className="btn btn-solid t-button">
             {t.header.book}
           </a>
           <BookingLink t={t} />
@@ -148,7 +149,7 @@ export function Packages({ t }: { t: Content }) {
                     ))}
                   </dl>
                   {/* A15: the message names the package the visitor asked about */}
-                  <a href={whatsappUrl(packageGreeting(t, item))} {...external} className="btn btn-ghost t-button mt-6">
+                  <a href={whatsappUrl(packageGreeting(t, item), `${pagePath(t.lang, "consulting")}#packages`)} {...external} className="btn btn-ghost t-button mt-6">
                     {s.ask}
                     <span className="sr-only">: {item.name}</span>
                   </a>
@@ -225,6 +226,65 @@ export function Faq({ t }: { t: Content }) {
             <p className="t-body pb-6">{item.answer}</p>
           </details>
         ))}
+      </div>
+    </Section>
+  )
+}
+
+// A2: package chooser. Pure HTML and CSS: picking an answer reveals its package
+// through :has() (see .chooser in globals.css), so it needs no JavaScript.
+// Browsers without :has() show every answer's match, which still reads well.
+export function Chooser({ t }: { t: Content }) {
+  const s = t.chooser
+  const packages = t.consulting.packages
+  return (
+    <Section id="chooser" labelledBy="chooser-title">
+      <div className="chooser grid gap-12 nav:grid-cols-12">
+        <div className="nav:col-span-5">
+          <SectionLabel>{s.label}</SectionLabel>
+          <h2 id="chooser-title" className="t-h2">
+            <Rich text={s.title} />
+          </h2>
+        </div>
+        <div className="nav:col-span-7">
+          <fieldset>
+            <legend className="t-label mb-4 text-ink">{s.question}</legend>
+            <div className="border-t border-hairline">
+              {s.options.map((option, index) => (
+                <label
+                  key={option.answer}
+                  className="flex min-h-12 cursor-pointer items-center gap-4 border-b border-hairline py-3 has-[:checked]:text-ink"
+                >
+                  <input type="radio" name="need" value={index} className="size-4 shrink-0 accent-current" />
+                  <span className="t-body text-inherit">{option.answer}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <div aria-live="polite">
+            {s.options.map((option, index) => {
+              const item = packages.items[option.pkg]
+              return (
+                <div key={option.answer} data-choice={index} className="chooser-result mt-8 border-s-2 border-ink ps-6">
+                  <p className="t-label text-faint">{s.result}</p>
+                  <p className="t-h3 mt-2">{item.name}</p>
+                  <p className="t-body mt-2">
+                    {item.length} · {item.price ?? packages.feeLater}
+                  </p>
+                  <a
+                    href={whatsappUrl(packageGreeting(t, item), `${pagePath(t.lang, "consulting")}#chooser`)}
+                    {...external}
+                    className="btn btn-solid t-button mt-4"
+                  >
+                    {packages.ask}
+                    <span className="sr-only">: {item.name}</span>
+                  </a>
+                </div>
+              )
+            })}
+          </div>
+          <p className="t-body mt-8">{s.unsure}</p>
+        </div>
       </div>
     </Section>
   )

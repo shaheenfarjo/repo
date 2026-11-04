@@ -30,7 +30,7 @@ export function SiteHeader({ t, page }: { t: Content; page: Page }) {
   const greeting = page === "consulting" ? t.whatsapp.consulting : t.whatsapp.home
   // C8: booking stays visible at every width. It opens the calendar once one is
   // set (A14), and WhatsApp until then.
-  const bookHref = contact.bookingUrl || whatsappUrl(greeting)
+  const bookHref = contact.bookingUrl || whatsappUrl(greeting, pagePath(t.lang, page))
 
   const switchLink = (className: string) => (
     <a

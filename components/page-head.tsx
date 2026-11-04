@@ -29,8 +29,7 @@ function jsonLd(lang: Lang, page: Page) {
     founder: { "@id": personId },
   }
   if (page === "consulting") {
-    // A20: each package as a Service offer; only prices that are published on
-    // the page are given
+    // A20: each package as a Service offer, with its published fee
     service.hasOfferCatalog = {
       "@type": "OfferCatalog",
       name: t.consulting.packages.label,
@@ -43,11 +42,33 @@ function jsonLd(lang: Lang, page: Page) {
           provider: { "@id": serviceId },
           areaServed: { "@type": "Country", name: "Iraq" },
         },
-        ...(item.price ? { price: item.price.replace(/[^\d]/g, ""), priceCurrency: "IQD" } : {}),
+        ...(item.amount
+          ? {
+              priceSpecification: {
+                "@type": item.monthly ? "UnitPriceSpecification" : "PriceSpecification",
+                priceCurrency: "IQD",
+                // "From" prices are starting points, not the fee itself
+                ...(item.from ? { minPrice: item.amount } : { price: item.amount }),
+                ...(item.monthly ? { unitCode: "MON" } : {}),
+              },
+            }
+          : {}),
       })),
     }
   }
-  return { "@context": "https://schema.org", "@graph": [person, service] }
+  const graph: Record<string, unknown>[] = [person, service]
+  if (page === "tools" || page === "now" || page === "privacy") {
+    graph.push({
+      "@type": "WebPage",
+      name: t.meta[page].title,
+      description: t.meta[page].description,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      author: { "@id": personId },
+      ...(page === "tools" ? { about: { "@id": serviceId } } : {}),
+    })
+  }
+  return { "@context": "https://schema.org", "@graph": graph }
 }
 
 // One share image per page and language
