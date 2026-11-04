@@ -72,7 +72,7 @@ function jsonLd(lang: Lang, page: Page) {
       },
     })
   }
-  if (page === "tools" || page === "now" || page === "privacy") {
+  if (page === "method" || page === "tools" || page === "now" || page === "privacy") {
     graph.push({
       "@type": "WebPage",
       name: t.meta[page].title,
@@ -80,7 +80,7 @@ function jsonLd(lang: Lang, page: Page) {
       url: `${siteUrl}${pagePath(lang, page)}`,
       inLanguage: lang,
       author: { "@id": personId },
-      ...(page === "tools" ? { about: { "@id": serviceId } } : {}),
+      ...(page === "tools" || page === "method" ? { about: { "@id": serviceId } } : {}),
     })
   }
   return { "@context": "https://schema.org", "@graph": graph }

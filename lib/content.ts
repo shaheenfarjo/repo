@@ -5,7 +5,7 @@
 // in English, weight 600 in Arabic (Arabic has no italic). See <Rich>.
 
 export type Lang = "en" | "ar"
-export type Page = "home" | "consulting" | "workshops" | "tools" | "now" | "privacy"
+export type Page = "home" | "consulting" | "method" | "workshops" | "tools" | "now" | "privacy"
 
 export const siteUrl = "https://shaheenfarjo.com"
 
@@ -20,9 +20,9 @@ export const contact = {
   instagram: "https://www.instagram.com/shaheen.farjo",
   x: "https://x.com/shaheenfarjo",
   aboutMe: "https://about.me/shaheenfarjo",
-  // A14: paste the Google Calendar appointment page link here. While it is
-  // empty, the site shows WhatsApp only and no booking link appears anywhere.
-  bookingUrl: "",
+  // A14: the Google Calendar appointment page. The header's booking button opens
+  // it, and it sits beside WhatsApp; setting it to "" falls back to WhatsApp only.
+  bookingUrl: "https://calendar.app.google/rLjBtW85Arzydzmg6",
 }
 
 export const socials = [
@@ -50,6 +50,9 @@ export const sectionIds = [
   "health-check",
   "break-even",
   "topics",
+  "build",
+  "prove",
+  "grow",
   "contact",
 ] as const
 export type SectionId = (typeof sectionIds)[number]
@@ -182,6 +185,8 @@ export type Content = {
       ask: string
     }
     process: { label: string; aside: string; steps: { name: string; body: string }[] }
+    // Link from the method section to the full guide
+    methodGuide: string
     principles: { label: string; items: { title: string; body: string }[] }
     faq: { label: string; items: { question: string; answer: string }[] }
   }
@@ -228,6 +233,23 @@ export type Content = {
   }
   nowPage: { label: string; title: string; updated: string; items: { title: string; body: string }[] }
   privacyPage: { label: string; title: string; items: { title: string; body: string }[] }
+  methodPage: {
+    label: string
+    title: string
+    lead: string
+    fields: Record<"goal" | "look" | "get" | "measured" | "yourPart", string>
+    stages: {
+      id: "build" | "prove" | "grow"
+      number: string
+      name: string
+      length: string
+      goal: string
+      look: string
+      get: string
+      measured: string
+      yourPart: string
+    }[]
+  }
   workshopsPage: {
     label: string
     title: string
@@ -272,6 +294,11 @@ export const en: Content = {
       title: "Shaheen K. Farjo — Entrepreneur, Business Developer & Consultant, Baghdad",
       description:
         "Entrepreneur, business developer and consultant in Baghdad. I build my own ventures and help small businesses in Iraq grow with a clear diagnosis, a practical plan and hands-on help.",
+    },
+    method: {
+      title: "The Build · Prove · Grow Method — Shaheen K. Farjo",
+      description:
+        "How the consulting works at each stage: what we look at, what you get, how it's measured, and what's needed from you.",
     },
     workshops: {
       title: "Half-day Business Workshops for Owners and Teams in Iraq — Shaheen K. Farjo",
@@ -568,6 +595,7 @@ export const en: Content = {
       note: "Every engagement has a fixed fee agreed in writing before work starts.",
       ask: "Ask about this package",
     },
+    methodGuide: "Read the full method guide",
     process: {
       label: "How it works",
       aside: "Your sign-off at each step",
@@ -800,6 +828,53 @@ export const en: Content = {
       { title: "Questions", body: "Email hello@shaheenfarjo.com." },
     ],
   },
+  methodPage: {
+    label: "The method",
+    title: "Build · Prove · Grow, *step by step.*",
+    lead: "What happens at each stage, what you get, and what I need from you.",
+    fields: {
+      goal: "Goal",
+      look: "What we look at",
+      get: "What you get",
+      measured: "How it's measured",
+      yourPart: "Your part",
+    },
+    stages: [
+      {
+        id: "build",
+        number: "01",
+        name: "Build",
+        length: "2–3 weeks from receiving your data",
+        goal: "Know exactly what's holding the business back, and what to fix first.",
+        look: "Your data, sales channels, operations and finances, plus interviews with you, your team, 5–10 customers and 1–3 suppliers.",
+        get: "An 8–12 page report with a health scorecard, the top problems, 1–3 quick wins and a 12-month roadmap, presented in a 60-minute meeting.",
+        measured: "We record your starting numbers in each area. Every later change is measured against them.",
+        yourPart: "Share the data on time, make people available for interviews, and give feedback on the draft within 7 days.",
+      },
+      {
+        id: "prove",
+        number: "02",
+        name: "Prove",
+        length: "Set in your proposal, stage by stage",
+        goal: "Put the plan to work with your team, and show with real numbers that it's working.",
+        look: "The changes from the roadmap, in the order we agreed.",
+        get: "Changes put in place with your team. These can include order, stock and cash systems, pricing and offers, shop setup, campaign launches, and SOPs, training and hiring. Each stage ends with your sign-off. At handover, you get a results report against your starting point, plus check-ins at 30 and 90 days.",
+        measured: "Every change against your starting point. Every number has a source, and I'm clear about what the work did and didn't cause.",
+        yourPart: "One decision-maker, your team's time, access through roles you grant and can withdraw at any time, and combined comments within 7 days. You pay ad budgets, platforms and suppliers directly.",
+      },
+      {
+        id: "grow",
+        number: "03",
+        name: "*Grow*",
+        length: "Month after month",
+        goal: "Keep what works, scale it, and keep the momentum.",
+        look: "Your key numbers each month.",
+        get: "A weekly 45-minute check-in and a monthly KPI review, with 6 hands-on days a month if you choose the part-time growth lead.",
+        measured: "Monthly KPI reviews against your starting point.",
+        yourPart: "Payment monthly in advance, with a 3-month minimum.",
+      },
+    ],
+  },
   workshopsPage: {
     label: "Workshops",
     title: "Half-day workshops for *owners and teams.*",
@@ -848,6 +923,10 @@ export const ar: Content = {
       title: "شاهين ك. فرجو — رائد أعمال ومطوّر أعمال ومستشار، بغداد",
       description:
         "رائد أعمال ومطوّر أعمال ومستشار في بغداد. أبني مشاريعي الخاصة، وأساعد المشاريع الصغيرة في العراق على النمو بتشخيص واضح وخطة عملية ومساعدة فعلية في التنفيذ.",
+    },
+    method: {
+      title: "منهجية نبني · نُثبت · ننمو — شاهين ك. فرجو",
+      description: "كيف تسير الاستشارات في كل مرحلة: ما ننظر فيه، وما تحصل عليه، وكيف نقيس، وما المطلوب منك.",
     },
     workshops: {
       title: "ورش عمل لأصحاب المشاريع وفرقهم في العراق — شاهين ك. فرجو",
@@ -1141,6 +1220,7 @@ export const ar: Content = {
       note: "لكل عمل أتعاب ثابتة يُتفق عليها كتابيًا قبل البدء.",
       ask: "استفسر عن هذه الباقة",
     },
+    methodGuide: "اقرأ دليل المنهجية كاملًا",
     process: {
       label: "كيف نعمل",
       aside: "موافقتك عند كل خطوة",
@@ -1332,6 +1412,53 @@ export const ar: Content = {
       },
       { title: "الخطوط", body: "تُحمَّل خطوط IBM Plex من هذا الموقع نفسه، لا من طرف ثالث." },
       { title: "أسئلة", body: "راسلني على hello@shaheenfarjo.com." },
+    ],
+  },
+  methodPage: {
+    label: "المنهجية",
+    title: "نبني · نُثبت · ننمو، *خطوة بخطوة.*",
+    lead: "ما يحدث في كل مرحلة، وما تحصل عليه، وما أحتاجه منك.",
+    fields: {
+      goal: "الهدف",
+      look: "ما ننظر فيه",
+      get: "ما تحصل عليه",
+      measured: "كيف نقيس",
+      yourPart: "دورك",
+    },
+    stages: [
+      {
+        id: "build",
+        number: "01",
+        name: "نبني",
+        length: "2–3 أسابيع من استلام بياناتك",
+        goal: "أن تعرف بدقة ما الذي يعيق عملك، وما الذي يجب إصلاحه أولًا.",
+        look: "بياناتك وقنوات المبيعات والعمليات والمالية، إضافة إلى مقابلات معك ومع فريقك و5–10 عملاء و1–3 موردين.",
+        get: "تقرير من 8–12 صفحة يتضمن بطاقة تقييم، وأهم المشكلات، و1–3 مكاسب سريعة، وخارطة طريق لمدة 12 شهرًا، يُعرض في اجتماع مدته 60 دقيقة.",
+        measured: "نسجّل أرقامك في كل مجال عند البداية، ونقيس كل تغيير لاحق بالمقارنة معها.",
+        yourPart: "تقديم البيانات في وقتها، وإتاحة الأشخاص للمقابلات، وإرسال ملاحظاتك على المسودة خلال 7 أيام.",
+      },
+      {
+        id: "prove",
+        number: "02",
+        name: "نُثبت",
+        length: "تُحدَّد في العرض، مرحلة بمرحلة",
+        goal: "تنفيذ الخطة مع فريقك، وإثبات نجاحها بأرقام حقيقية.",
+        look: "التغييرات الواردة في خارطة الطريق، بالترتيب الذي اتفقنا عليه.",
+        get: "تغييرات تُنفَّذ مع فريقك، قد تشمل أنظمة الطلبات والمخزون والنقد، والأسعار والعروض، وتجهيز المتجر، وإطلاق الحملات، وإجراءات العمل والتدريب والتوظيف. وتنتهي كل مرحلة بموافقتك. وعند التسليم، تقرير نتائج مقارنة بنقطة البداية، ومتابعة بعد 30 و90 يومًا.",
+        measured: "كل تغيير بالمقارنة مع نقطة البداية. لكل رقم مصدر، وأوضح ما الذي حققه العمل وما لم يحققه.",
+        yourPart: "صاحب قرار واحد، ووقت فريقك، وصلاحيات تمنحها ويمكنك سحبها في أي وقت، وملاحظات موحّدة خلال 7 أيام. وتدفع أنت ميزانيات الإعلانات والمنصات والموردين مباشرةً.",
+      },
+      {
+        id: "grow",
+        number: "03",
+        name: "*ننمو*",
+        length: "شهرًا بعد شهر",
+        goal: "الحفاظ على ما ينجح وتوسيعه، وإبقاء الزخم.",
+        look: "أرقامك الأساسية كل شهر.",
+        get: "متابعة أسبوعية لمدة 45 دقيقة ومراجعة شهرية للمؤشرات، مع 6 أيام عمل ميداني شهريًا إذا اخترت مدير النمو بدوام جزئي.",
+        measured: "مراجعة شهرية للمؤشرات بالمقارنة مع نقطة البداية.",
+        yourPart: "الدفع مقدمًا كل شهر، بحد أدنى 3 أشهر.",
+      },
     ],
   },
   workshopsPage: {

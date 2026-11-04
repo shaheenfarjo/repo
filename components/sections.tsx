@@ -137,6 +137,7 @@ export function ConsultingSummary({ t }: { t: Content }) {
             <a href={whatsappUrl(packageGreeting(t, t.consulting.packages.items[0]), `${pagePath(t.lang)}#consulting`)} {...external} className="btn btn-ghost t-button">
               {s.ask}
             </a>
+            <BookingLink t={t} />
           </div>
         </div>
         <ol aria-label={t.consulting.method.label} className="self-end border-b border-hairline md:col-span-4 md:col-start-9">
