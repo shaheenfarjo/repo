@@ -74,6 +74,9 @@ export function Method({ t }: { t: Content }) {
           </li>
         ))}
       </ol>
+      <a href={pagePath(t.lang, "method")} className="btn btn-ghost t-button mt-10">
+        {t.consulting.methodGuide}
+      </a>
     </Section>
   )
 }
