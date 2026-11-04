@@ -95,6 +95,11 @@ export function Services({ t }: { t: Content }) {
                 </li>
               ))}
             </ul>
+            {service.more && (
+              <a href={pagePath(t.lang, service.more)} className="t-label mt-4 inline-flex min-h-11 items-center text-ink underline underline-offset-4">
+                {s.more}
+              </a>
+            )}
           </li>
         ))}
       </ul>

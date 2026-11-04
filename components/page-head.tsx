@@ -57,6 +57,21 @@ function jsonLd(lang: Lang, page: Page) {
     }
   }
   const graph: Record<string, unknown>[] = [person, service]
+  if (page === "workshops") {
+    const w = t.workshopsPage
+    graph.push({
+      "@type": "Service",
+      name: `${en.name} — ${w.label}`,
+      description: w.lead,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      provider: { "@id": serviceId },
+      areaServed: { "@type": "Country", name: "Iraq" },
+      offers: {
+        "@type": "Offer",
+        priceSpecification: { "@type": "PriceSpecification", priceCurrency: "IQD", minPrice: w.fee.min, maxPrice: w.fee.max },
+      },
+    })
+  }
   if (page === "tools" || page === "now" || page === "privacy") {
     graph.push({
       "@type": "WebPage",
