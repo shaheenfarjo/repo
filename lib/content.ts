@@ -5,7 +5,7 @@
 // in English, weight 600 in Arabic (Arabic has no italic). See <Rich>.
 
 export type Lang = "en" | "ar"
-export type Page = "home" | "consulting"
+export type Page = "home" | "consulting" | "tools" | "now" | "privacy"
 
 export const siteUrl = "https://shaheenfarjo.com"
 
@@ -46,19 +46,28 @@ export const sectionIds = [
   "packages",
   "process",
   "faq",
+  "chooser",
+  "health-check",
+  "break-even",
   "contact",
 ] as const
 export type SectionId = (typeof sectionIds)[number]
 
-export function whatsappUrl(greeting: string) {
-  return `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(greeting)}`
+// A16: pre-filled messages end with the page they came from, so it's clear
+// which part of the site a conversation started on
+export function whatsappUrl(greeting: string, source?: string) {
+  const text = source ? `${greeting}\n\n(shaheenfarjo.com${source})` : greeting
+  return `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(text)}`
 }
 
 export function pagePath(lang: Lang, page: Page = "home") {
   const prefix = lang === "ar" ? "/ar" : ""
-  if (page === "consulting") return `${prefix}/consulting`
-  return prefix || "/"
+  if (page === "home") return prefix || "/"
+  return `${prefix}/${page}`
 }
+
+// D6 / F8: remote-only period, announced from December 1 (dates in Baghdad time)
+export const remotePeriod = { showFrom: "2026-12-01", until: "2027-05-15" }
 
 type Package = {
   name: string
@@ -172,6 +181,50 @@ export type Content = {
     principles: { label: string; items: { title: string; body: string }[] }
     faq: { label: string; items: { question: string; answer: string }[] }
   }
+  remote: string
+  chooser: {
+    label: string
+    title: string
+    question: string
+    // Each answer points at a package by its position in consulting.packages
+    options: { answer: string; pkg: number }[]
+    result: string
+    unsure: string
+  }
+  toolsPage: { label: string; title: string; lead: string }
+  healthCheck: {
+    label: string
+    title: string
+    intro: string
+    assumptions: string
+    answers: { yes: string; partly: string; no: string }
+    areas: { name: string; statements: [string, string] }[]
+    resultTitle: string
+    score: string
+    weakest: string
+    allGood: string
+    incomplete: string
+    send: string
+    message: string
+    noScript: string
+  }
+  breakEven: {
+    label: string
+    title: string
+    intro: string
+    currency: string
+    fields: Record<"fixed" | "price" | "variable", { label: string; hint: string }>
+    results: { units: string; revenue: string; margin: string }
+    empty: string
+    loss: string
+    formula: string
+    assumptionsLabel: string
+    assumptions: string[]
+    noScript: string
+  }
+  nowPage: { label: string; title: string; updated: string; items: { title: string; body: string }[] }
+  privacyPage: { label: string; title: string; items: { title: string; body: string }[] }
+  footerLinks: Record<"now" | "tools" | "privacy", string>
   marquee: { label: string; lines: [string[], string[]] }
   contactSection: {
     label: string
@@ -200,6 +253,19 @@ export const en: Content = {
       title: "Shaheen K. Farjo — Entrepreneur, Business Developer & Consultant, Baghdad",
       description:
         "Entrepreneur, business developer and consultant in Baghdad. I build my own ventures and help small businesses in Iraq grow with a clear diagnosis, a practical plan and hands-on help.",
+    },
+    tools: {
+      title: "Free Business Health Check and Break-even Calculator (IQD) — Shaheen K. Farjo",
+      description:
+        "A five-minute health check for small businesses in Iraq, and a break-even calculator in Iraqi dinars. Free, private, and nothing is stored.",
+    },
+    now: {
+      title: "Now — Shaheen K. Farjo",
+      description: "What Shaheen K. Farjo is working on now: The IDEA, consulting, AUIB and SAL.",
+    },
+    privacy: {
+      title: "Privacy — Shaheen K. Farjo",
+      description: "No analytics, no cookies, and tools that store nothing: what shaheenfarjo.com keeps, and what it doesn't.",
     },
     consulting: {
       title: "Business Development Consulting for Small Businesses in Iraq — Shaheen K. Farjo",
@@ -532,6 +598,151 @@ export const en: Content = {
       ],
     },
   },
+  remote:
+    "From January 24 to May 15, 2027, I'm working remotely: advice and Diagnostics only, with no on-site work.",
+  chooser: {
+    label: "Package chooser",
+    title: "Not sure where to *start?*",
+    question: "What do you need most right now?",
+    options: [
+      { answer: "To understand what's holding my business back", pkg: 0 },
+      { answer: "A full plan for my next stage", pkg: 1 },
+      { answer: "The plan, and help setting it up", pkg: 2 },
+      { answer: "A business plan and pitch deck for investors", pkg: 3 },
+      { answer: "Someone to check in with every month", pkg: 4 },
+    ],
+    result: "Start with",
+    unsure: "Still unsure? Start with the Diagnostic: its fee is credited in full toward any package you start within 30 days.",
+  },
+  toolsPage: {
+    label: "Tools",
+    title: "Free tools for *owners.*",
+    lead: "Two quick tools for small business owners. They run in your browser and store nothing.",
+  },
+  healthCheck: {
+    label: "Health check",
+    title: "A five-minute *health check.*",
+    intro:
+      "Twelve plain statements about how your business runs. Answer each one honestly. At the end you get a short written result you can send me on WhatsApp if you'd like to talk it through.",
+    assumptions:
+      "A quick self-check, not a financial assessment or advice. It runs in your browser: nothing you choose is stored or sent unless you press the WhatsApp button.",
+    answers: { yes: "Yes", partly: "Partly", no: "No" },
+    areas: [
+      {
+        name: "Sales",
+        statements: ["I know how many orders I got last month.", "I know which products or services bring in most of my sales."],
+      },
+      {
+        name: "Pricing",
+        statements: ["I know the profit on each product after all costs.", "I've reviewed my prices in the last six months."],
+      },
+      {
+        name: "Cash",
+        statements: [
+          "I keep business money separate from personal money.",
+          "I know how much cash the business needs to cover next month.",
+        ],
+      },
+      {
+        name: "Orders and stock",
+        statements: ["Orders are recorded in one place, not only in chats.", "I know what's in stock without counting by hand."],
+      },
+      {
+        name: "Team and processes",
+        statements: ["Someone other than me could run the business for a week.", "The main tasks are written down."],
+      },
+      {
+        name: "Marketing",
+        statements: ["I post or advertise on a regular schedule.", "I know where most new customers find me."],
+      },
+    ],
+    resultTitle: "Your result",
+    score: "{score} out of {total}",
+    weakest: "Start with: {areas}.",
+    allGood: "No weak area stands out. A Diagnostic can still show what's worth improving next.",
+    incomplete: "Answer all twelve statements to see your result.",
+    send: "Send my result on WhatsApp",
+    message: "Hello Shaheen, I did the health check on your site. Here's my result:",
+    noScript:
+      "With JavaScript off, the result can't be added up here. Count your answers (Yes = 2, Partly = 1, No = 0; 24 is the top score) and send me the areas that scored lowest.",
+  },
+  breakEven: {
+    label: "Break-even calculator",
+    title: "When does your business *cover its costs?*",
+    intro: "Enter three numbers in Iraqi dinars to see how much you need to sell each month to cover your costs.",
+    currency: "IQD",
+    fields: {
+      fixed: {
+        label: "Fixed costs per month",
+        hint: "Rent, salaries, subscriptions: costs that stay the same however much you sell.",
+      },
+      price: { label: "Average selling price per sale", hint: "What a customer pays for one order or product." },
+      variable: { label: "Variable cost per sale", hint: "Product cost, packaging and delivery for that one sale." },
+    },
+    results: {
+      units: "Sales needed each month",
+      revenue: "Revenue needed each month",
+      margin: "Each sale contributes",
+    },
+    empty: "Fill in all three numbers to see the result.",
+    loss: "Each sale costs more than it brings in, so no number of sales covers your fixed costs. Look at the price and the variable cost first.",
+    formula: "Break-even sales = fixed costs ÷ (price − variable cost)",
+    assumptionsLabel: "Assumptions",
+    assumptions: [
+      "One average sale stands in for all your products.",
+      "Costs stay the same from month to month.",
+      "Taxes, loan repayments and your own salary aren't included unless you add them to fixed costs.",
+      "This is an estimate, not financial advice. Nothing you enter is stored or sent.",
+    ],
+    noScript: "With JavaScript off, use the formula above with your own numbers.",
+  },
+  nowPage: {
+    label: "Now",
+    title: "What I'm doing *now*",
+    updated: "Updated November 2026",
+    items: [
+      {
+        title: "Building The IDEA",
+        body: "One Pass to buy, rent, bid and share games, music, books, films and gear in Iraq, from The IDEA and from shops, delivered to your door.",
+      },
+      { title: "Developing The Iraqi Curator", body: "Curating the best of Iraq in one place, under The IDEA." },
+      {
+        title: "Consulting",
+        body: "Working with a small number of businesses at a time. From January 24 to May 15, 2027: remote advice and Diagnostics only.",
+      },
+      { title: "Studying", body: "A BBA in Entrepreneurship at the American University of Iraq – Baghdad." },
+      { title: "Leading SAL", body: "Founder and president of the AUIB Society of Arts and Letters." },
+    ],
+  },
+  privacyPage: {
+    label: "Privacy",
+    title: "What this site *keeps.*",
+    items: [
+      {
+        title: "No analytics, cookies or tracking",
+        body: "There are no analytics scripts, no cookies and no ad trackers on this site.",
+      },
+      {
+        title: "Your theme choice",
+        body: "If you switch between light and dark mode, the choice is saved in your own browser (localStorage) so the site remembers it. It never leaves your device.",
+      },
+      {
+        title: "The tools",
+        body: "The health check and the break-even calculator run entirely in your browser. Nothing you choose or type is stored or sent. A result reaches me only if you press the WhatsApp button and send the message yourself.",
+      },
+      {
+        title: "Links to other services",
+        body: "WhatsApp, email, LinkedIn and the other links open those services, which have their own privacy policies.",
+      },
+      {
+        title: "Hosting",
+        body: "The site is hosted on Vercel, which keeps standard server logs, such as IP addresses, to run and protect the service.",
+      },
+      { title: "Fonts", body: "The IBM Plex fonts are served from this site, not from a third party." },
+      { title: "Questions", body: "Email hello@shaheenfarjo.com." },
+    ],
+  },
+  footerLinks: { now: "Now", tools: "Tools", privacy: "Privacy" },
   marquee: {
     label: "Toolkit & values",
     lines: [
@@ -564,6 +775,19 @@ export const ar: Content = {
       title: "شاهين ك. فرجو — رائد أعمال ومطوّر أعمال ومستشار، بغداد",
       description:
         "رائد أعمال ومطوّر أعمال ومستشار في بغداد. أبني مشاريعي الخاصة، وأساعد المشاريع الصغيرة في العراق على النمو بتشخيص واضح وخطة عملية ومساعدة فعلية في التنفيذ.",
+    },
+    tools: {
+      title: "فحص صحة المشروع وحاسبة نقطة التعادل بالدينار العراقي — شاهين ك. فرجو",
+      description:
+        "فحص سريع لمشروعك في خمس دقائق، وحاسبة نقطة التعادل بالدينار العراقي للمشاريع الصغيرة في العراق. مجانية وخاصة، ولا يُحفظ أي شيء.",
+    },
+    now: {
+      title: "الآن — شاهين ك. فرجو",
+      description: "ما يعمل عليه شاهين ك. فرجو الآن: ايديا والاستشارات والدراسة وجمعية الفنون والآداب.",
+    },
+    privacy: {
+      title: "الخصوصية — شاهين ك. فرجو",
+      description: "لا إحصاءات ولا كوكيز، وأدوات لا تحفظ شيئًا: ما يحتفظ به موقع shaheenfarjo.com وما لا يحتفظ به.",
     },
     consulting: {
       title: "استشارات تطوير الأعمال للمشاريع الصغيرة في بغداد والعراق — شاهين ك. فرجو",
@@ -881,6 +1105,125 @@ export const ar: Content = {
       ],
     },
   },
+  remote: "من 24 كانون الثاني إلى 15 أيار 2027 أعمل عن بُعد: استشارات وتشخيص فقط، من دون عمل في الموقع.",
+  chooser: {
+    label: "اختيار الباقة",
+    title: "ما تعرف من وين *تبدي؟*",
+    question: "ما أكثر ما تحتاجه الآن؟",
+    options: [
+      { answer: "أن أفهم ما الذي يعيق عملي", pkg: 0 },
+      { answer: "خطة كاملة لمرحلتي القادمة", pkg: 1 },
+      { answer: "الخطة، ومن يساعدني في تجهيزها", pkg: 2 },
+      { answer: "خطة عمل وعرض للمستثمرين", pkg: 3 },
+      { answer: "من يتابع معي كل شهر", pkg: 4 },
+    ],
+    result: "ابدأ بـ",
+    unsure: "ما زلت محتارًا؟ ابدأ بالتشخيص: يُخصم المبلغ بالكامل من أي باقة تبدأها خلال 30 يومًا.",
+  },
+  toolsPage: {
+    label: "الأدوات",
+    title: "أدوات مجانية *لأصحاب المشاريع.*",
+    lead: "أداتان سريعتان لأصحاب المشاريع الصغيرة. تعملان داخل متصفحك ولا تحفظان أي شيء.",
+  },
+  healthCheck: {
+    label: "فحص صحة المشروع",
+    title: "فحص سريع لمشروعك في *خمس دقائق.*",
+    intro:
+      "اثنتا عشرة عبارة بسيطة عن طريقة سير عملك. أجب عن كل منها بصدق، وفي النهاية تحصل على نتيجة مكتوبة قصيرة يمكنك إرسالها لي على واتساب إذا أردت أن نناقشها.",
+    assumptions: "فحص ذاتي سريع، وليس تقييمًا ماليًا أو نصيحة. يعمل داخل متصفحك: لا يُحفظ أي شيء تختاره ولا يُرسل إلا إذا ضغطت زر واتساب.",
+    answers: { yes: "نعم", partly: "جزئيًا", no: "لا" },
+    areas: [
+      { name: "المبيعات", statements: ["أعرف عدد الطلبات التي وصلتني الشهر الماضي.", "أعرف أي المنتجات أو الخدمات تجلب معظم مبيعاتي."] },
+      { name: "التسعير", statements: ["أعرف الربح من كل منتج بعد احتساب جميع التكاليف.", "راجعت أسعاري خلال الأشهر الستة الماضية."] },
+      { name: "النقد", statements: ["أفصل أموال المشروع عن أموالي الشخصية.", "أعرف كم يحتاج المشروع من نقد لتغطية الشهر القادم."] },
+      { name: "الطلبات والمخزون", statements: ["تُسجَّل الطلبات في مكان واحد، لا في المحادثات فقط.", "أعرف ما في المخزون من دون عدّه يدويًا."] },
+      { name: "الفريق والإجراءات", statements: ["يستطيع شخص غيري إدارة المشروع لمدة أسبوع.", "المهام الأساسية مكتوبة."] },
+      { name: "التسويق", statements: ["أنشر أو أعلن وفق جدول منتظم.", "أعرف من أين يأتي معظم زبائني الجدد."] },
+    ],
+    resultTitle: "نتيجتك",
+    score: "{score} من {total}",
+    weakest: "ابدأ من: {areas}.",
+    allGood: "لا تظهر نقطة ضعف واضحة. ومع ذلك يمكن للتشخيص أن يحدد ما يستحق التحسين بعد ذلك.",
+    incomplete: "أجب عن العبارات الاثنتي عشرة لترى نتيجتك.",
+    send: "أرسل نتيجتي على واتساب",
+    message: "هلو شاهين، سويت فحص صحة المشروع بموقعك، وهاي نتيجتي:",
+    noScript:
+      "مع تعطيل JavaScript لا يمكن حساب النتيجة هنا. احسب إجاباتك (نعم = 2، جزئيًا = 1، لا = 0؛ وأعلى نتيجة 24) وأرسل لي المجالات الأقل نتيجة.",
+  },
+  breakEven: {
+    label: "حاسبة نقطة التعادل",
+    title: "متى يغطي مشروعك *تكاليفه؟*",
+    intro: "أدخل ثلاثة أرقام بالدينار العراقي لترى كم تحتاج أن تبيع كل شهر لتغطية تكاليفك.",
+    currency: "دينار",
+    fields: {
+      fixed: { label: "التكاليف الثابتة شهريًا", hint: "الإيجار والرواتب والاشتراكات: تكاليف لا تتغير مهما بعت." },
+      price: { label: "متوسط سعر البيع للطلب الواحد", hint: "ما يدفعه الزبون مقابل طلب أو منتج واحد." },
+      variable: { label: "التكلفة المتغيرة للطلب الواحد", hint: "تكلفة المنتج والتغليف والتوصيل لذلك الطلب." },
+    },
+    results: {
+      units: "عدد المبيعات المطلوبة شهريًا",
+      revenue: "الإيرادات المطلوبة شهريًا",
+      margin: "يساهم كل طلب بـ",
+    },
+    empty: "املأ الأرقام الثلاثة لترى النتيجة.",
+    loss: "كل عملية بيع تكلّف أكثر مما تجلب، لذلك لن يغطي أي عدد من المبيعات تكاليفك الثابتة. ابدأ بمراجعة السعر والتكلفة المتغيرة.",
+    formula: "مبيعات التعادل = التكاليف الثابتة ÷ (السعر − التكلفة المتغيرة)",
+    assumptionsLabel: "الافتراضات",
+    assumptions: [
+      "يمثّل متوسط طلب واحد جميع منتجاتك.",
+      "تبقى التكاليف ثابتة من شهر لآخر.",
+      "لا تشمل الضرائب وأقساط القروض وراتبك الشخصي إلا إذا أضفتها إلى التكاليف الثابتة.",
+      "هذا تقدير وليس نصيحة مالية. لا يُحفظ أي شيء تدخله ولا يُرسل.",
+    ],
+    noScript: "مع تعطيل JavaScript استخدم المعادلة أعلاه بأرقامك.",
+  },
+  nowPage: {
+    label: "الآن",
+    title: "ما أعمل عليه *الآن*",
+    updated: "آخر تحديث: تشرين الثاني 2026",
+    items: [
+      {
+        title: "أبني ايديا",
+        body: "پاس واحد لتشتري وتستأجر وتزايد وتشارك الألعاب والموسيقى والكتب والأفلام والأجهزة في العراق، من ايديا ومن المتاجر، مع التوصيل إلى بابك.",
+      },
+      { title: "أطوّر The Iraqi Curator", body: "يجمع أفضل ما في العراق في مكان واحد، ضمن ايديا." },
+      {
+        title: "الاستشارات",
+        body: "أعمل مع عدد محدود من المشاريع في الوقت نفسه. من 24 كانون الثاني إلى 15 أيار 2027: استشارات وتشخيص عن بُعد فقط.",
+      },
+      { title: "الدراسة", body: "بكالوريوس إدارة الأعمال، تخصص ريادة الأعمال، في الجامعة الأمريكية في العراق – بغداد." },
+      { title: "جمعية الفنون والآداب", body: "مؤسس جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد ورئيسها." },
+    ],
+  },
+  privacyPage: {
+    label: "الخصوصية",
+    title: "ما يحتفظ به هذا *الموقع.*",
+    items: [
+      {
+        title: "لا إحصاءات ولا كوكيز ولا تتبّع",
+        body: "لا توجد في هذا الموقع أدوات إحصاء ولا ملفات تعريف الارتباط (كوكيز) ولا أدوات تتبّع إعلانية.",
+      },
+      {
+        title: "اختيارك للمظهر",
+        body: "إذا بدّلت بين الوضع الفاتح والداكن، يُحفظ اختيارك في متصفحك (localStorage) ليتذكره الموقع، ولا يغادر جهازك أبدًا.",
+      },
+      {
+        title: "الأدوات",
+        body: "يعمل فحص صحة المشروع وحاسبة نقطة التعادل بالكامل داخل متصفحك. لا يُحفظ أي شيء تختاره أو تكتبه ولا يُرسل. لا تصلني النتيجة إلا إذا ضغطت زر واتساب وأرسلت الرسالة بنفسك.",
+      },
+      {
+        title: "روابط لخدمات أخرى",
+        body: "تفتح روابط واتساب والبريد الإلكتروني ولينكدإن وغيرها تلك الخدمات، ولكل منها سياسة خصوصية خاصة بها.",
+      },
+      {
+        title: "الاستضافة",
+        body: "الموقع مستضاف على Vercel، التي تحتفظ بسجلات خادم اعتيادية، مثل عناوين IP، لتشغيل الخدمة وحمايتها.",
+      },
+      { title: "الخطوط", body: "تُحمَّل خطوط IBM Plex من هذا الموقع نفسه، لا من طرف ثالث." },
+      { title: "أسئلة", body: "راسلني على hello@shaheenfarjo.com." },
+    ],
+  },
+  footerLinks: { now: "الآن", tools: "الأدوات", privacy: "الخصوصية" },
   marquee: {
     label: "الأدوات والقيم",
     lines: [

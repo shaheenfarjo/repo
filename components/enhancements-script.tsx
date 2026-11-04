@@ -4,10 +4,11 @@ import { sectionIds, timeZone } from "@/lib/content"
 // behavior, and everything it does is an enhancement:
 // 1. Theme button: switches data-theme on <html> and remembers the choice.
 // 2. Footer clock: Baghdad time, updated each second. Hidden until it has a time.
-// 3. Hero sphere: loads /sphere.js once the page is idle, or shows the static
+// 3. Remote-work notice: shown between its dates, by the visitor's calendar.
+// 4. Hero sphere: loads /sphere.js once the page is idle, or shows the static
 //    snapshot for reduced motion, Save-Data or low-end phones.
-// 4. Language switch links keep the reader on the section they're viewing.
-// 5. The mobile disclosure menu closes after a link inside it is chosen.
+// 5. Language switch links keep the reader on the section they're viewing.
+// 6. The mobile disclosure menu closes after a link inside it is chosen.
 const source = `(() => {
   const root = document.documentElement;
   const themeColor = document.querySelector('meta[name="theme-color"]');
@@ -26,6 +27,11 @@ const source = `(() => {
     });
   }
   syncTheme();
+
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: ${JSON.stringify(timeZone)} }).format(new Date());
+  for (const notice of document.querySelectorAll("[data-show-from]")) {
+    notice.hidden = !(today >= notice.dataset.showFrom && today <= notice.dataset.showUntil);
+  }
 
   const clock = document.querySelector("[data-clock]");
   const clockRow = document.querySelector("[data-clock-row]");

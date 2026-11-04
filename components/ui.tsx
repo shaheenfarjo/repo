@@ -1,4 +1,4 @@
-import { contact, type Content } from "@/lib/content"
+import { contact, remotePeriod, type Content } from "@/lib/content"
 import type { ReactNode } from "react"
 import { Rich } from "@/lib/rich"
 
@@ -62,5 +62,28 @@ export function BookingLink({ t }: { t: Content }) {
     <a href={contact.bookingUrl} {...external} className="btn btn-ghost t-button">
       {t.booking}
     </a>
+  )
+}
+
+// Baghdad calendar date as YYYY-MM-DD
+function baghdadDate(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Baghdad" }).format(date)
+}
+
+// F8: the remote-only notice. Shown from remotePeriod.showFrom to .until. The
+// build date decides the server-rendered state; the inline script re-checks
+// the visitor's date, so it appears on December 1 without a redeploy.
+export function RemoteNotice({ t, className = "" }: { t: Content; className?: string }) {
+  const today = baghdadDate(new Date())
+  const visible = today >= remotePeriod.showFrom && today <= remotePeriod.until
+  return (
+    <p
+      data-show-from={remotePeriod.showFrom}
+      data-show-until={remotePeriod.until}
+      hidden={!visible}
+      className={`t-body border-s-2 border-ink ps-4 text-ink ${className}`}
+    >
+      {t.remote}
+    </p>
   )
 }

@@ -1,6 +1,6 @@
 import { contact, packageGreeting, pagePath, whatsappUrl, type Content } from "@/lib/content"
 import { Rich } from "@/lib/rich"
-import { ArrowUpRight, BookingLink, SectionHeading, container, external } from "./ui"
+import { ArrowUpRight, BookingLink, RemoteNotice, SectionHeading, SectionLabel, container, external } from "./ui"
 
 export function Section({
   id,
@@ -129,11 +129,12 @@ export function ConsultingSummary({ t }: { t: Content }) {
         <div className="md:col-span-7">
           <p className="t-lead">{s.lead}</p>
           <p className="t-body mt-8 text-ink">{s.diagnostic}</p>
+          <RemoteNotice t={t} className="mt-6" />
           <div className="mt-10 flex flex-wrap gap-3">
             <a href={pagePath(t.lang, "consulting")} className="btn btn-solid t-button">
               {s.fullOffer}
             </a>
-            <a href={whatsappUrl(packageGreeting(t, t.consulting.packages.items[0]))} {...external} className="btn btn-ghost t-button">
+            <a href={whatsappUrl(packageGreeting(t, t.consulting.packages.items[0]), `${pagePath(t.lang)}#consulting`)} {...external} className="btn btn-ghost t-button">
               {s.ask}
             </a>
           </div>
@@ -192,9 +193,20 @@ export function Marquee({ t }: { t: Content }) {
   )
 }
 
-export function Contact({ t, greeting, index = "05" }: { t: Content; greeting: string; index?: string }) {
+export function Contact({
+  t,
+  greeting,
+  source,
+  index,
+}: {
+  t: Content
+  greeting: string
+  source: string
+  // Section number in the page's sequence; pages without numbered sections omit it
+  index?: string
+}) {
   const s = t.contactSection
-  const whatsapp = whatsappUrl(greeting)
+  const whatsapp = whatsappUrl(greeting, `${source}#contact`)
   const rows = [
     { label: s.rows.email, value: contact.email, href: `mailto:${contact.email}`, isExternal: false },
     { label: s.rows.whatsapp, value: contact.phoneDisplay, href: whatsapp, isExternal: true },
@@ -202,9 +214,7 @@ export function Contact({ t, greeting, index = "05" }: { t: Content; greeting: s
   ]
   return (
     <Section id="contact" labelledBy="contact-title" className="border-t border-hairline">
-      <p className="t-label mb-6 text-muted">
-        <span className="t-num">{index}</span> — {s.label}
-      </p>
+      <SectionLabel index={index}>{s.label}</SectionLabel>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <h2 id="contact-title" className="t-name min-w-0 text-[clamp(52px,8vw,128px)]">
           <Rich text={s.title} />

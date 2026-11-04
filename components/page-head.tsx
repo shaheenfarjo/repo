@@ -56,7 +56,19 @@ function jsonLd(lang: Lang, page: Page) {
       })),
     }
   }
-  return { "@context": "https://schema.org", "@graph": [person, service] }
+  const graph: Record<string, unknown>[] = [person, service]
+  if (page === "tools" || page === "now" || page === "privacy") {
+    graph.push({
+      "@type": "WebPage",
+      name: t.meta[page].title,
+      description: t.meta[page].description,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      author: { "@id": personId },
+      ...(page === "tools" ? { about: { "@id": serviceId } } : {}),
+    })
+  }
+  return { "@context": "https://schema.org", "@graph": graph }
 }
 
 // One share image per page and language
