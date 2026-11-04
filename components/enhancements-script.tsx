@@ -9,6 +9,7 @@ import { sectionIds, timeZone } from "@/lib/content"
 //    snapshot for reduced motion, Save-Data or low-end phones.
 // 5. Language switch links keep the reader on the section they're viewing.
 // 6. The mobile disclosure menu closes after a link inside it is chosen.
+// 7. Printing opens every <details>, and a link to a closed one opens it.
 const source = `(() => {
   const root = document.documentElement;
   const themeColor = document.querySelector('meta[name="theme-color"]');
@@ -74,6 +75,19 @@ const source = `(() => {
   };
   addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
   update();
+
+  const openTarget = () => {
+    const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target && target.tagName === "DETAILS") target.open = true;
+  };
+  addEventListener("hashchange", openTarget);
+  openTarget();
+  let reopen = [];
+  addEventListener("beforeprint", () => {
+    reopen = [...document.querySelectorAll("main details:not([open])")];
+    for (const details of reopen) details.open = true;
+  });
+  addEventListener("afterprint", () => { for (const details of reopen) details.open = false; });
 
   const menu = document.querySelector("details[data-menu]");
   if (menu) menu.addEventListener("click", (event) => { if (event.target.closest("a")) menu.open = false; });

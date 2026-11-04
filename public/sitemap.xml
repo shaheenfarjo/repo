@@ -15,48 +15,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/"/>
   </url>
   <url>
-    <loc>https://shaheenfarjo.com/consulting</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/consulting"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/consulting"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/consulting"/>
-  </url>
-  <url>
-    <loc>https://shaheenfarjo.com/ar/consulting</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/consulting"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/consulting"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/consulting"/>
-  </url>
-  <url>
-    <loc>https://shaheenfarjo.com/method</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/method"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/method"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/method"/>
-  </url>
-  <url>
-    <loc>https://shaheenfarjo.com/ar/method</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/method"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/method"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/method"/>
-  </url>
-  <url>
-    <loc>https://shaheenfarjo.com/workshops</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/workshops"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/workshops"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/workshops"/>
-  </url>
-  <url>
-    <loc>https://shaheenfarjo.com/ar/workshops</loc>
-    <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/workshops"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/workshops"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/workshops"/>
-  </url>
-  <url>
     <loc>https://shaheenfarjo.com/tools</loc>
     <changefreq>monthly</changefreq>
     <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/tools"/>
@@ -71,18 +29,18 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/tools"/>
   </url>
   <url>
-    <loc>https://shaheenfarjo.com/now</loc>
+    <loc>https://shaheenfarjo.com/sample-diagnostic</loc>
     <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/now"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/now"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/now"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/sample-diagnostic"/>
   </url>
   <url>
-    <loc>https://shaheenfarjo.com/ar/now</loc>
+    <loc>https://shaheenfarjo.com/ar/sample-diagnostic</loc>
     <changefreq>monthly</changefreq>
-    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/now"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/now"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/now"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/sample-diagnostic"/>
   </url>
   <url>
     <loc>https://shaheenfarjo.com/privacy</loc>

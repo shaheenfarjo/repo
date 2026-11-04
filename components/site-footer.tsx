@@ -1,42 +1,40 @@
-import { pagePath, socials, type Content } from "@/lib/content"
+import { pagePath, socialUrls, type Content } from "@/lib/content"
 import { container, external } from "./ui"
 
 export function SiteFooter({ t }: { t: Content }) {
+  const f = t.footer
   return (
     <footer className="border-t border-hairline">
       <div className={`${container} flex flex-col items-center justify-between gap-6 py-8 md:flex-row`}>
+        {/* Baghdad time, filled in by the inline script; hidden until it has a time */}
         <p data-clock-row hidden className="t-label text-faint">
-          {t.footer.city}{" "}
-          <span data-clock className="t-num text-ink" dir="ltr">
-          </span>{" "}
-          <span className="t-num" dir="ltr">GMT+3</span>
+          {f.city}{" "}
+          <span data-clock className="t-num text-ink" dir="ltr" />{" "}
+          <span className="t-num">{f.timeZone}</span>
         </p>
         <ul className="flex flex-wrap justify-center gap-x-6">
-          {(["workshops", "now", "tools", "privacy"] as const).map((page) => (
+          {(["tools", "privacy"] as const).map((page) => (
             <li key={page}>
               <a href={pagePath(t.lang, page)} className="t-label inline-flex min-h-11 items-center text-faint hover:text-ink">
-                {t.footerLinks[page]}
+                {f.links[page]}
               </a>
             </li>
           ))}
-        </ul>
-        <ul className="flex flex-wrap justify-center gap-x-6">
-          {socials.map((social) => (
-            <li key={social.name}>
+          {(Object.keys(socialUrls) as (keyof typeof socialUrls)[]).map((key) => (
+            <li key={key}>
               <a
-                href={social.url}
+                href={socialUrls[key]}
                 {...external}
                 rel="noopener noreferrer me"
-                lang="en"
                 className="t-label inline-flex min-h-11 items-center text-faint hover:text-ink"
               >
-                {social.name}
+                {f.socials[key]}
               </a>
             </li>
           ))}
         </ul>
         <p className="t-label text-faint">
-          © <span className="t-num">2003 — {new Date().getFullYear()}</span> {t.footer.owner}
+          © <span className="t-num">2003 — {new Date().getFullYear()}</span> {f.owner}
         </p>
       </div>
     </footer>

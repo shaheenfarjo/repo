@@ -6,43 +6,50 @@ export const container = "mx-auto w-full max-w-[1440px] px-6 md:px-12"
 
 export const external = { target: "_blank", rel: "noopener noreferrer" } as const
 
-// Mono label like "01 — About". Numbers stay in Plex Mono on the Arabic page.
-export function SectionLabel({ index, children }: { index?: string; children: ReactNode }) {
-  return (
-    <p className="t-label mb-6 text-muted">
-      {index && (
-        <>
-          <span className="t-num">{index}</span> —{" "}
-        </>
-      )}
-      {children}
-    </p>
-  )
-}
-
-export function SectionHeading({
-  index,
-  label,
-  title,
+export function Section({
   id,
+  labelledBy,
+  className = "",
+  children,
 }: {
-  index: string
-  label: string
-  title: string
-  id: string
+  id?: string
+  labelledBy: string
+  className?: string
+  children: ReactNode
 }) {
   return (
-    <div className="mb-16 md:mb-24">
-      <SectionLabel index={index}>{label}</SectionLabel>
-      <h2 id={id} className="t-h2">
-        <Rich text={title} />
-      </h2>
-    </div>
+    <section id={id} aria-labelledby={labelledBy} className={`scroll-mt-16 py-24 md:py-32 ${className}`}>
+      <div className={container}>{children}</div>
+    </section>
   )
 }
 
-export function Dot({ className = "" }: { className?: string }) {
-  return <span aria-hidden="true" className={`inline-block size-1.5 shrink-0 rounded-pill bg-ink ${className}`} />
+// A section's heading: the title alone, no eyebrow or number
+export function Heading({ id, title, as: Tag = "h2" }: { id: string; title: string; as?: "h1" | "h2" }) {
+  return (
+    <Tag id={id} className="t-h2 mb-16 max-w-[20ch] md:mb-20">
+      <Rich text={title} />
+    </Tag>
+  )
+}
+
+// A smaller heading inside a section, over a rule
+export function SubHeading({ id, children }: { id?: string; children: ReactNode }) {
+  return (
+    <h3 id={id} className="t-label border-b border-ink pb-4 text-ink">
+      {children}
+    </h3>
+  )
+}
+
+// The plus/minus mark on a <details> summary
+export function DisclosureMark() {
+  return (
+    <span aria-hidden="true" className="relative size-4 shrink-0">
+      <span className="absolute inset-x-0 top-1/2 h-px bg-ink" />
+      <span className="absolute inset-y-0 start-1/2 w-px bg-ink transition-transform group-open:scale-y-0" />
+    </span>
+  )
 }
 
 // Small north-east arrow; it points north-west in right-to-left text
@@ -54,8 +61,7 @@ export function ArrowUpRight({ className = "" }: { className?: string }) {
   )
 }
 
-// A14: a link to the appointment page, beside WhatsApp. Renders nothing until
-// contact.bookingUrl is set.
+// The appointment page, beside WhatsApp. Renders nothing if contact.bookingUrl is empty.
 export function BookingLink({ t }: { t: Content }) {
   if (!contact.bookingUrl) return null
   return (
@@ -70,9 +76,9 @@ function baghdadDate(date: Date) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Baghdad" }).format(date)
 }
 
-// F8: the remote-only notice. Shown from remotePeriod.showFrom to .until. The
-// build date decides the server-rendered state; the inline script re-checks
-// the visitor's date, so it appears on December 1 without a redeploy.
+// The remote-only notice, shown from remotePeriod.showFrom to .until. The build
+// date sets the server-rendered state; the inline script re-checks the
+// visitor's date, so it appears on time without a redeploy.
 export function RemoteNotice({ t, className = "" }: { t: Content; className?: string }) {
   const today = baghdadDate(new Date())
   const visible = today >= remotePeriod.showFrom && today <= remotePeriod.until

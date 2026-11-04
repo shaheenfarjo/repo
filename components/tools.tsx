@@ -1,14 +1,12 @@
 import { pagePath, whatsappUrl, type Content } from "@/lib/content"
 import { Rich } from "@/lib/rich"
-import { Section } from "./sections"
-import { SectionLabel, container, external } from "./ui"
+import { Section, container, external } from "./ui"
 
 export function ToolsIntro({ t }: { t: Content }) {
-  const s = t.toolsPage
+  const s = t.tools
   return (
     <section aria-labelledby="tools-title" className="border-b border-hairline">
       <div className={`${container} pt-20 pb-20 md:pt-28 md:pb-28`}>
-        <SectionLabel>{s.label}</SectionLabel>
         <h1 id="tools-title" className="t-h2 max-w-[18ch]">
           <Rich text={s.title} />
         </h1>
@@ -30,10 +28,9 @@ export function ToolsIntro({ t }: { t: Content }) {
   )
 }
 
-function ToolHeading({ index, label, title, id }: { index: string; label: string; title: string; id: string }) {
+function ToolHeading({ title, id }: { title: string; id: string }) {
   return (
     <div className="mb-12 border-b border-ink pb-6 md:mb-16">
-      <SectionLabel index={index}>{label}</SectionLabel>
       <h2 id={id} className="t-h2">
         <Rich text={title} />
       </h2>
@@ -51,7 +48,7 @@ export function HealthCheck({ t }: { t: Content }) {
   let number = 0
   return (
     <Section id="health-check" labelledBy="health-check-title">
-      <ToolHeading index="01" label={s.label} title={s.title} id="health-check-title" />
+      <ToolHeading title={s.title} id="health-check-title" />
       <div className="grid gap-12 nav:grid-cols-12">
         <div className="nav:col-span-4">
           <p className="t-lead">{s.intro}</p>
@@ -67,7 +64,7 @@ export function HealthCheck({ t }: { t: Content }) {
                 return (
                   <fieldset key={statement} className="border-t border-hairline py-4">
                     <legend className="t-body float-start mb-3 w-full text-ink">
-                      <span className="t-num text-faint">{String(number).padStart(2, "0")}</span> {statement}
+                      {statement}
                     </legend>
                     <div className="clear-both flex flex-wrap gap-2">
                       {answerKeys.map((key) => (
@@ -124,7 +121,7 @@ export function BreakEven({ t }: { t: Content }) {
   const fields = ["fixed", "price", "variable"] as const
   return (
     <Section id="break-even" labelledBy="break-even-title" className="bg-surface">
-      <ToolHeading index="02" label={s.label} title={s.title} id="break-even-title" />
+      <ToolHeading title={s.title} id="break-even-title" />
       <div className="grid gap-12 nav:grid-cols-12">
         <form data-break-even className="nav:col-span-7">
           <p className="t-lead mb-10">{s.intro}</p>
