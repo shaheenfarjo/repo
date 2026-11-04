@@ -3,7 +3,7 @@ import { sectionIds, timeZone } from "@/lib/content"
 // The pages ship no framework JavaScript. This inline script is the page's only
 // behavior, and everything it does is an enhancement:
 // 1. Theme button: switches data-theme on <html> and remembers the choice.
-// 2. Footer clock: Baghdad time, updated each second.
+// 2. Footer clock: Baghdad time, updated each second. Hidden until it has a time.
 // 3. Hero sphere: loads /sphere.js once the page is idle, or shows the static
 //    snapshot for reduced motion, Save-Data or low-end phones.
 // 4. Language switch links keep the reader on the section they're viewing.
@@ -28,10 +28,12 @@ const source = `(() => {
   syncTheme();
 
   const clock = document.querySelector("[data-clock]");
-  if (clock) {
+  const clockRow = document.querySelector("[data-clock-row]");
+  if (clock && clockRow) {
     const format = new Intl.DateTimeFormat("en-GB", { timeZone: ${JSON.stringify(timeZone)}, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
     const tick = () => { clock.textContent = format.format(new Date()); };
     tick();
+    clockRow.hidden = false;
     setInterval(tick, 1000);
   }
 

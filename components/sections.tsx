@@ -1,8 +1,8 @@
-import { contact, whatsappUrl, type Content } from "@/lib/content"
+import { contact, packageGreeting, pagePath, whatsappUrl, type Content } from "@/lib/content"
 import { Rich } from "@/lib/rich"
-import { ArrowUpRight, SectionHeading, container, external } from "./ui"
+import { ArrowUpRight, BookingLink, SectionHeading, container, external } from "./ui"
 
-function Section({
+export function Section({
   id,
   labelledBy,
   className = "",
@@ -26,7 +26,7 @@ export function About({ t }: { t: Content }) {
     <Section id="about" labelledBy="about-title">
       <SectionHeading index="01" label={s.label} title={s.title} id="about-title" />
       <div className="grid gap-16 md:grid-cols-12">
-        <div className="md:col-span-7">
+        <div className="md:col-span-6 lg:col-span-7">
           <p className="t-lead">{s.lead}</p>
           <div className="mt-10 space-y-6">
             {s.body.map((paragraph) => (
@@ -36,11 +36,11 @@ export function About({ t }: { t: Content }) {
             ))}
           </div>
         </div>
-        <dl className="self-end border-b border-hairline md:col-span-4 md:col-start-9">
+        <dl className="self-end border-b border-hairline md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9">
           {s.facts.map((fact) => (
             <div key={fact.key} className="flex items-baseline justify-between gap-6 border-t border-hairline py-4">
               <dt className="t-label shrink-0 text-faint">{fact.key}</dt>
-              <dd className="t-h3 text-end text-[18px]">{fact.value}</dd>
+              <dd className="t-h3 min-w-0 text-end text-[18px]">{fact.value}</dd>
             </div>
           ))}
         </dl>
@@ -58,7 +58,7 @@ export function Work({ t }: { t: Content }) {
         {s.projects.map((project) => {
           const title = (
             <>
-              <span lang="en" className="t-work">
+              <span lang={/[\u0600-\u06FF]/.test(project.title) ? "ar" : "en"} className="t-work">
                 {project.title}
               </span>
               {project.arabic && (
@@ -107,7 +107,7 @@ export function WhatIDo({ t }: { t: Content }) {
   return (
     <Section id="what" labelledBy="what-title">
       <SectionHeading index="03" label={s.label} title={s.title} id="what-title" />
-      <ul className="grid gap-px border border-hairline bg-hairline sm:grid-cols-2 nav:grid-cols-4">
+      <ul className="grid gap-px border border-hairline bg-hairline md:grid-cols-3">
         {s.items.map((item, index) => (
           <li key={item.title} className="flex flex-col gap-6 bg-bg p-8 sm:min-h-72 md:p-10">
             <span className="t-num t-label text-faint">0{index + 1}</span>
@@ -120,131 +120,35 @@ export function WhatIDo({ t }: { t: Content }) {
   )
 }
 
-// A consulting sub-section: mono label row with a 1px ink rule under it
-function SubSection({ label, aside, children }: { label: string; aside?: string; children: React.ReactNode }) {
-  return (
-    <div className="mt-24">
-      <h3 className="t-label flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-ink pb-4 text-ink">
-        <span>{label}</span>
-        {aside && <span className="text-muted">{aside}</span>}
-      </h3>
-      {children}
-    </div>
-  )
-}
-
-export function Consulting({ t }: { t: Content }) {
-  const s = t.consulting
+export function ConsultingSummary({ t }: { t: Content }) {
+  const s = t.consultingSummary
   return (
     <Section id="consulting" labelledBy="consulting-title" className="bg-surface">
       <SectionHeading index="04" label={s.label} title={s.title} id="consulting-title" />
-      <p className="t-lead -mt-8 md:-mt-12">{s.lead}</p>
-
-      <SubSection label={s.method.label} aside={s.method.aside}>
-        <ol>
-          {s.method.steps.map((step) => (
-            <li key={step.number} className="grid gap-4 border-b border-hairline py-10 md:grid-cols-12 md:items-baseline md:gap-8">
-              <span className="t-num t-label text-faint md:col-span-2">{step.number}</span>
-              <p className="t-big md:col-span-5">
-                <Rich text={step.name} />
-              </p>
-              <p className="t-body md:col-span-5">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </SubSection>
-
-      <SubSection label={s.services.label} aside={s.services.aside}>
-        <ul className="grid gap-12 pt-10 sm:grid-cols-2 nav:grid-cols-4 nav:gap-8">
-          {s.services.items.map((service) => (
-            <li key={service.title}>
-              <h4 className="t-h3">{service.title}</h4>
-              <p className="t-body mt-2">{service.summary}</p>
-              <ul className="mt-6 border-t border-hairline">
-                {service.examples.map((example) => (
-                  <li key={example} className="t-body border-b border-hairline py-2 text-ink">
-                    {example}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </SubSection>
-
-      <SubSection label={s.packages.label} aside={s.packages.aside}>
-        <ul>
-          {s.packages.items.map((item) => (
-            <li key={item.name} className="grid gap-4 border-b border-hairline py-8 md:grid-cols-12 md:items-baseline md:gap-8">
-              <div className="md:col-span-4">
-                {item.tag && <span className="t-chip mb-3 inline-block rounded-pill bg-ink px-3 py-1 text-bg">{item.tag}</span>}
-                <h4 className="t-h3">{item.name}</h4>
-                <p className="t-label t-num mt-2 text-faint">{item.length}</p>
-              </div>
-              <p className="t-body md:col-span-5">{item.description}</p>
-              <div className="md:col-span-3 md:text-end">
-                {item.price ? (
-                  <>
-                    <p className="t-h3 t-num">{item.price}</p>
-                    <p className="t-label mt-2 text-muted">{item.priceNote}</p>
-                  </>
-                ) : (
-                  <p className="t-label text-muted">{s.packages.feeLater}</p>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-        <p className="t-body mt-6">{s.packages.note}</p>
-      </SubSection>
-
-      <SubSection label={s.process.label} aside={s.process.aside}>
-        <ol className="grid gap-10 pt-10 sm:grid-cols-2 nav:grid-cols-4 nav:gap-8">
-          {s.process.steps.map((step, index) => (
-            <li key={step.name} className="border-t border-ink pt-6">
-              <span className="t-num t-label text-faint">{index + 1}</span>
-              <h4 className="t-h3 mt-3">{step.name}</h4>
-              <p className="t-body mt-3">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </SubSection>
-
-      <SubSection label={s.principles.label}>
-        <ul className="grid gap-10 pt-10 md:grid-cols-3 md:gap-8">
-          {s.principles.items.map((item) => (
-            <li key={item.title}>
-              <h4 className="t-h3">
-                <Rich text={item.title} />
-              </h4>
-              <p className="t-body mt-4">{item.body}</p>
-            </li>
-          ))}
-        </ul>
-      </SubSection>
-
-      {/*
-        Results (case studies): hidden until there are client results to show.
-        To enable, add a <SubSection label="Results"> here with its copy in
-        lib/content.ts (consulting.results) for both languages.
-      */}
-
-      <SubSection label={s.faq.label}>
-        <div>
-          {s.faq.items.map((item) => (
-            <details key={item.question} className="group border-b border-hairline">
-              <summary className="flex min-h-11 items-center justify-between gap-6 py-6">
-                <span className="t-h3">{item.question}</span>
-                <span aria-hidden="true" className="relative size-4 shrink-0">
-                  <span className="absolute inset-x-0 top-1/2 h-px bg-ink" />
-                  <span className="absolute inset-y-0 start-1/2 w-px bg-ink transition-transform group-open:scale-y-0" />
-                </span>
-              </summary>
-              <p className="t-body pb-6">{item.answer}</p>
-            </details>
-          ))}
+      <div className="grid gap-12 md:grid-cols-12">
+        <div className="md:col-span-7">
+          <p className="t-lead">{s.lead}</p>
+          <p className="t-body mt-8 text-ink">{s.diagnostic}</p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <a href={pagePath(t.lang, "consulting")} className="btn btn-solid t-button">
+              {s.fullOffer}
+            </a>
+            <a href={whatsappUrl(packageGreeting(t, t.consulting.packages.items[0]))} {...external} className="btn btn-ghost t-button">
+              {s.ask}
+            </a>
+          </div>
         </div>
-      </SubSection>
+        <ol aria-label={t.consulting.method.label} className="self-end border-b border-hairline md:col-span-4 md:col-start-9">
+          {t.consulting.method.steps.map((step) => (
+            <li key={step.number} className="flex items-baseline gap-6 border-t border-hairline py-4">
+              <span className="t-num t-label text-faint">{step.number}</span>
+              <span className="t-work">
+                <Rich text={step.name} />
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
     </Section>
   )
 }
@@ -288,9 +192,9 @@ export function Marquee({ t }: { t: Content }) {
   )
 }
 
-export function Contact({ t }: { t: Content }) {
+export function Contact({ t, greeting, index = "05" }: { t: Content; greeting: string; index?: string }) {
   const s = t.contactSection
-  const whatsapp = whatsappUrl(t.whatsappGreeting)
+  const whatsapp = whatsappUrl(greeting)
   const rows = [
     { label: s.rows.email, value: contact.email, href: `mailto:${contact.email}`, isExternal: false },
     { label: s.rows.whatsapp, value: contact.phoneDisplay, href: whatsapp, isExternal: true },
@@ -299,7 +203,7 @@ export function Contact({ t }: { t: Content }) {
   return (
     <Section id="contact" labelledBy="contact-title" className="border-t border-hairline">
       <p className="t-label mb-6 text-muted">
-        <span className="t-num">05</span> — {s.label}
+        <span className="t-num">{index}</span> — {s.label}
       </p>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <h2 id="contact-title" className="t-name min-w-0 text-[clamp(52px,8vw,128px)]">
@@ -310,9 +214,12 @@ export function Contact({ t }: { t: Content }) {
         </a>
       </div>
       <p className="t-lead mt-10">{s.line}</p>
-      <a href={whatsapp} {...external} className="btn btn-solid t-button mt-10">
-        {s.button}
-      </a>
+      <div className="mt-10 flex flex-wrap gap-3">
+        <a href={whatsapp} {...external} className="btn btn-solid t-button">
+          {s.button}
+        </a>
+        <BookingLink t={t} />
+      </div>
       <dl className="mt-16 grid gap-8 border-t border-hairline pt-10 md:grid-cols-3">
         {rows.map((row) => (
           <div key={row.label}>

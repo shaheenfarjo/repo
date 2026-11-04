@@ -5,10 +5,9 @@ export function SiteFooter({ t }: { t: Content }) {
   return (
     <footer className="border-t border-hairline">
       <div className={`${container} flex flex-col items-center justify-between gap-6 py-8 md:flex-row`}>
-        <p className="t-label text-faint">
+        <p data-clock-row hidden className="t-label text-faint">
           {t.footer.city}{" "}
           <span data-clock className="t-num text-ink" dir="ltr">
-            --:--:--
           </span>{" "}
           <span className="t-num" dir="ltr">GMT+3</span>
         </p>

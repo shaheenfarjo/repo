@@ -14,4 +14,18 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/"/>
   </url>
+  <url>
+    <loc>https://shaheenfarjo.com/consulting</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/consulting"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/consulting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/consulting"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/consulting</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/consulting"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/consulting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/consulting"/>
+  </url>
 </urlset>

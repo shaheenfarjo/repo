@@ -5,6 +5,7 @@
 // in English, weight 600 in Arabic (Arabic has no italic). See <Rich>.
 
 export type Lang = "en" | "ar"
+export type Page = "home" | "consulting"
 
 export const siteUrl = "https://shaheenfarjo.com"
 
@@ -19,6 +20,9 @@ export const contact = {
   instagram: "https://www.instagram.com/shaheen.farjo",
   x: "https://x.com/shaheenfarjo",
   aboutMe: "https://about.me/shaheenfarjo",
+  // A14: paste the Google Calendar appointment page link here. While it is
+  // empty, the site shows WhatsApp only and no booking link appears anywhere.
+  bookingUrl: "",
 }
 
 export const socials = [
@@ -31,28 +35,48 @@ export const socials = [
 export const coordinates = "33.31°N 44.36°E"
 export const timeZone = "Asia/Baghdad"
 
-export const sectionIds = ["about", "work", "what", "consulting", "contact"] as const
+// Sections the language switch can keep the reader on, across both pages
+export const sectionIds = [
+  "about",
+  "work",
+  "what",
+  "consulting",
+  "method",
+  "services",
+  "packages",
+  "process",
+  "faq",
+  "contact",
+] as const
 export type SectionId = (typeof sectionIds)[number]
 
 export function whatsappUrl(greeting: string) {
   return `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(greeting)}`
 }
 
-export function pagePath(lang: Lang) {
-  return lang === "ar" ? "/ar" : "/"
+export function pagePath(lang: Lang, page: Page = "home") {
+  const prefix = lang === "ar" ? "/ar" : ""
+  if (page === "consulting") return `${prefix}/consulting`
+  return prefix || "/"
 }
 
 type Package = {
   name: string
+  // The package's name inside a sentence ("the Diagnostic"), for WhatsApp messages
+  inSentence: string
+  for: string
   length: string
-  description: string
+  receive: string
+  // D1: a "from" price goes here once it is decided. Without one, the package
+  // shows packages.feeLater ("Fee shared after the free call").
   price?: string
   priceNote?: string
   tag?: string
 }
 
 export type Project = {
-  date: string
+  // Left out until confirmed, rather than guessed
+  date?: string
   title: string
   arabic?: string
   href?: string
@@ -64,7 +88,7 @@ export type Project = {
 export type Content = {
   lang: Lang
   dir: "ltr" | "rtl"
-  meta: { title: string; description: string; locale: string }
+  meta: Record<Page, { title: string; description: string }> & { locale: string }
   name: string
   skipLink: string
   header: {
@@ -75,8 +99,16 @@ export type Content = {
     lightMode: string
     switchLabel: string
     switchLang: Lang
+    book: string
+    bookShort: string
   }
-  whatsappGreeting: string
+  whatsapp: {
+    home: string
+    consulting: string
+    // {package} is replaced with a package's inSentence
+    package: string
+  }
+  booking: string
   hero: {
     location: string
     nameFirst: string
@@ -84,8 +116,8 @@ export type Content = {
     role: string
     tagline: string
     cityAside: string
-    work: string
-    call: string
+    business: string
+    build: string
   }
   about: {
     label: string
@@ -96,17 +128,41 @@ export type Content = {
   }
   work: { label: string; title: string; projects: Project[] }
   what: { label: string; title: string; items: { title: string; body: string }[] }
+  consultingSummary: {
+    label: string
+    title: string
+    lead: string
+    diagnostic: string
+    fullOffer: string
+    ask: string
+  }
   consulting: {
     label: string
     title: string
     lead: string
-    method: { label: string; aside: string; steps: { number: string; name: string; body: string }[] }
+    shortOnTime: string
+    toPackages: string
+    method: {
+      label: string
+      aside: string
+      columns: { does: string; receive: string; length: string }
+      steps: { number: string; name: string; does: string; receive: string; length: string }[]
+    }
     services: {
       label: string
       aside: string
       items: { title: string; summary: string; examples: string[] }[]
     }
-    packages: { label: string; aside: string; items: Package[]; feeLater: string; note: string }
+    packages: {
+      label: string
+      aside: string
+      columns: { for: string; length: string; receive: string; fee: string }
+      items: Package[]
+      feeLater: string
+      optionsNote: string
+      note: string
+      ask: string
+    }
     process: { label: string; aside: string; steps: { name: string; body: string }[] }
     principles: { label: string; items: { title: string; body: string }[] }
     faq: { label: string; items: { question: string; answer: string }[] }
@@ -123,21 +179,29 @@ export type Content = {
   notFound: { title: string; body: string; back: string }
 }
 
-// Dates, links and tags as they were in the portfolio version (de89438)
+// Facts shared by both languages. Dates for Droid and The Iraqi Curator are as
+// first published; the SAL date is left out until confirmed.
 const projectFacts = {
   idea: { href: "https://theideaiq.com", tags: ["Venture", "Next.js", "Supabase"] },
   droid: { date: "2026", tags: ["AI", "Gemini", "Telegram"] },
-  curator: { date: "2026", href: "https://github.com/theideaiq/theiraqicurator" },
-  site: { date: "2026", href: "https://github.com/shaheenfarjo/repo", tags: ["Next.js", "Three.js", "Framer Motion"] },
+  curator: { date: "2026", href: "https://github.com/theideaiq/theiraqicurator", tags: ["Next.js", "Supabase", "Turborepo"] },
+  sal: { href: "https://auibsal.org" },
 }
 
 export const en: Content = {
   lang: "en",
   dir: "ltr",
   meta: {
-    title: "Shaheen K. Farjo — Entrepreneur, Business Developer & Consultant, Baghdad",
-    description:
-      "Entrepreneur, business developer and consultant in Baghdad. I build my own ventures and help small businesses in Iraq grow with a clear diagnosis, a practical plan and hands-on help.",
+    home: {
+      title: "Shaheen K. Farjo — Entrepreneur, Business Developer & Consultant, Baghdad",
+      description:
+        "Entrepreneur, business developer and consultant in Baghdad. I build my own ventures and help small businesses in Iraq grow with a clear diagnosis, a practical plan and hands-on help.",
+    },
+    consulting: {
+      title: "Business Development Consulting for Small Businesses in Iraq — Shaheen K. Farjo",
+      description:
+        "A clear diagnosis, a practical plan and hands-on help for small businesses and Instagram and WhatsApp brands in Iraq. Start with the Diagnostic: 2–3 weeks, 1,000,000 IQD.",
+    },
     locale: "en_US",
   },
   name: "Shaheen K. Farjo",
@@ -156,8 +220,15 @@ export const en: Content = {
     lightMode: "Light mode",
     switchLabel: "العربية",
     switchLang: "ar",
+    book: "Book a free call",
+    bookShort: "Book a call",
   },
-  whatsappGreeting: "Hello Shaheen, I'd like to book a free 30-minute call about my business.",
+  whatsapp: {
+    home: "Hello Shaheen, I'd like to book a free 30-minute call about my business.",
+    consulting: "Hello Shaheen, I read your consulting page and I'd like to book a free 30-minute call about my business.",
+    package: "Hello Shaheen, I'm interested in {package}. Could we book a free 30-minute call about my business?",
+  },
+  booking: "Pick a time on my calendar",
   hero: {
     location: "Baghdad, Iraq",
     nameFirst: "Shaheen",
@@ -165,8 +236,8 @@ export const en: Content = {
     role: "Entrepreneur — Business developer — Consultant",
     tagline: "Creating the things I wish existed in *Baghdad.*",
     cityAside: "بغداد",
-    work: "See my work",
-    call: "Book a free call",
+    business: "I run a business",
+    build: "See what I build",
   },
   about: {
     label: "About",
@@ -175,13 +246,14 @@ export const en: Content = {
     body: [
       "My work sits where business and technology meet. I can negotiate the partnership, shape the business model, and then sit down and write the code that ships it. That lets me take an idea from a conversation to a live product without losing anything in translation.",
       "Before working independently, I was a business developer and lead project consultant at Morshed BDC, where I led projects for Tqnyat al Hayat and Morabaa Software. Today my time goes into The IDEA and into consulting for a small number of businesses at a time.",
+      "I'm also a BBA student in Entrepreneurship at the American University of Iraq – Baghdad (AUIB), where I founded the Society of Arts and Letters and lead it as president.",
     ],
     facts: [
       { key: "Based in", value: "Baghdad, Iraq" },
       { key: "Currently", value: "Building The IDEA · Consulting" },
       { key: "Focus", value: "Ventures · Business development · Product" },
       { key: "Previously", value: "Morshed BDC" },
-      { key: "Stack", value: "Next.js · TypeScript · Supabase" },
+      { key: "Studying", value: "BBA in Entrepreneurship, AUIB" },
       { key: "Languages", value: "Arabic · English" },
     ],
   },
@@ -196,7 +268,7 @@ export const en: Content = {
         arabic: "ايديا",
         role: "Founder",
         description:
-          "The Iraqi Department of Entertainment Affairs: a home for digital products made in and for Iraq, with a shared platform for web, admin, payments and data.",
+          "A home for digital products made in and for Iraq, with a shared platform for web, admin, payments and data.",
       },
       {
         ...projectFacts.droid,
@@ -210,13 +282,14 @@ export const en: Content = {
         title: "The Iraqi Curator",
         role: "Product & build",
         description: "Curating the best of Iraq in one place. Currently in development under The IDEA.",
-        tags: ["In progress", "Next.js", "Turborepo"],
       },
       {
-        ...projectFacts.site,
-        title: "shaheenfarjo.com",
-        role: "Design & build",
-        description: "This site: Next.js, a WebGL sphere and a lot of opinions. Open source.",
+        ...projectFacts.sal,
+        title: "AUIB Society of Arts and Letters",
+        role: "Founder & president",
+        description:
+          "A student society for the arts and letters at the American University of Iraq – Baghdad. I founded it and lead it as president.",
+        tags: ["Student society", "AUIB"],
       },
     ],
   },
@@ -229,41 +302,55 @@ export const en: Content = {
         body: "Taking ideas from a napkin to a live product: the market, the model, the launch, and what comes after.",
       },
       {
-        title: "Business development",
-        body: "Partnerships, sales and growth plans, for my own ventures and for the businesses I consult for.",
-      },
-      {
         title: "Product & engineering",
         body: "I ship my own products with Next.js, TypeScript and Supabase, so plans stay grounded in what can actually be built.",
       },
       {
-        title: "Community",
-        body: "Education, volunteering and writing. Investing in Baghdad's next generation of builders.",
+        title: "Arts and letters",
+        body: "I founded the AUIB Society of Arts and Letters at the American University of Iraq – Baghdad, and lead it as president.",
       },
     ],
+  },
+  consultingSummary: {
+    label: "Consulting",
+    title: "A clear plan, and help *putting it to work.*",
+    lead: "Partnerships, sales and growth plans: I do this for my own ventures, and for small businesses and Instagram and WhatsApp brands in Iraq through a fixed-fee consulting offer.",
+    diagnostic:
+      "Start with the Diagnostic: 2–3 weeks, 1,000,000 IQD, credited in full toward any package you start within 30 days.",
+    fullOffer: "See the full offer",
+    ask: "Ask about the Diagnostic",
   },
   consulting: {
     label: "Consulting",
     title: "I help small businesses grow *on purpose.*",
     lead: "For owners of small businesses and Instagram and WhatsApp brands in Iraq: a clear diagnosis, a practical plan, and hands-on help putting it to work.",
+    shortOnTime: "Short on time?",
+    toPackages: "Jump to the packages",
     method: {
       label: "The method",
       aside: "Build · Prove · Grow",
+      columns: { does: "What I do", receive: "What you receive", length: "How long" },
       steps: [
         {
           number: "01",
           name: "Build",
-          body: "We diagnose your business and design the plan together: what's holding you back, what to fix first, and what it's worth.",
+          does: "We diagnose your business and design the plan together: what's holding you back, what to fix first, and what it's worth.",
+          receive: "A written diagnosis, the problems ranked by impact, quick wins and a 12-month roadmap.",
+          length: "2–3 weeks (the Diagnostic)",
         },
         {
           number: "02",
           name: "Prove",
-          body: "We put the plan to work with your team and measure every change against where you started, so results are real, not promised.",
+          does: "We put the plan to work with your team and measure every change against where you started, so results are real, not promised.",
+          receive: "Changes put in place with your team, each one measured against your starting point.",
+          length: "Set in your proposal, stage by stage",
         },
         {
           number: "03",
           name: "*Grow*",
-          body: "We keep what works, scale it, and stay on hand month to month so the momentum doesn't fade.",
+          does: "We keep what works, scale it, and stay on hand month to month so the momentum doesn't fade.",
+          receive: "Weekly check-ins, monthly KPI reviews, or part-time hands-on help.",
+          length: "Month to month",
         },
       ],
     },
@@ -313,39 +400,52 @@ export const en: Content = {
     packages: {
       label: "Ways to start",
       aside: "Fixed fees, agreed in writing",
+      columns: { for: "Who it's for", length: "Length", receive: "What you receive", fee: "Fee" },
       items: [
         {
           name: "Diagnostic",
+          inSentence: "the Diagnostic",
+          for: "Any owner who wants a clear picture before committing to more.",
           length: "2–3 weeks",
-          description:
-            "A full review of your business, the problems ranked by impact, quick wins and a 12-month roadmap.",
+          receive: "A full review of your business, the problems ranked by impact, quick wins and a 12-month roadmap.",
           price: "1,000,000 IQD",
-          priceNote: "Credited in full if you continue within 30 days",
+          priceNote: "Credited in full toward any package you start within 30 days.",
           tag: "Start here",
         },
         {
           name: "Growth Sprint",
+          inSentence: "the Growth Sprint",
+          for: "Businesses ready to plan their next stage properly.",
           length: "8–10 weeks",
-          description: "Diagnostic, strategy, market study, marketing plan and financial model.",
+          receive: "Diagnostic, strategy, market study, marketing plan and financial model.",
         },
         {
           name: "Launch Ready",
+          inSentence: "the Launch Ready package",
+          for: "Businesses that want the plan, and the setup done with them.",
           length: "12–14 weeks",
-          description: "The Growth Sprint plus systems, shop setup and a launched campaign.",
+          receive: "The Growth Sprint plus systems, shop setup and a launched campaign.",
         },
         {
           name: "Full Business Plan",
+          inSentence: "the Full Business Plan",
+          for: "Founders preparing to present their business to investors or funders.",
           length: "12–16 weeks",
-          description: "Every plan, a complete business plan and an investor-ready pitch deck.",
+          receive: "Every plan, a complete business plan and an investor-ready pitch deck.",
         },
         {
           name: "Monthly support",
+          inSentence: "monthly support",
+          for: "Owners who want someone in their corner every month.",
           length: "Ongoing",
-          description: "Weekly check-ins, monthly KPI reviews, or part-time hands-on help.",
+          receive: "Weekly check-ins, monthly KPI reviews, or part-time hands-on help.",
         },
       ],
       feeLater: "Fee shared after the free call",
+      optionsNote:
+        "After the free call, you get three written options. Each one is built from these packages and sized to your business, with a fixed fee, so you choose how far to go.",
       note: "Every engagement has a fixed fee agreed in writing before work starts.",
+      ask: "Ask about this package",
     },
     process: {
       label: "How it works",
@@ -354,7 +454,7 @@ export const en: Content = {
         { name: "Free call", body: "30 minutes to understand your business and what you want from it." },
         {
           name: "Proposal",
-          body: "Within 5 working days: three options with fixed fees, so you choose the scope.",
+          body: "Within 5 working days: three options built from these packages, each with a fixed fee, so you choose the scope.",
         },
         {
           name: "Work in stages",
@@ -394,7 +494,7 @@ export const en: Content = {
         {
           question: "How much does it cost?",
           answer:
-            "The Diagnostic is 1,000,000 IQD. Larger packages have fixed fees that depend on scope; you get three options in writing after the free call.",
+            "The Diagnostic is 1,000,000 IQD, credited in full toward any package you start within 30 days. Larger packages have fixed fees that depend on scope; you get three options in writing after the free call.",
         },
         {
           question: "Do you only give advice, or do you help implement?",
@@ -433,13 +533,22 @@ export const en: Content = {
   },
 }
 
+// Arabic: Modern Standard Arabic for headings, fees, promises and answers;
+// Iraqi Arabic for the visitor's own WhatsApp messages and short conversational buttons.
 export const ar: Content = {
   lang: "ar",
   dir: "rtl",
   meta: {
-    title: "شاهين ك. فرجو — رائد أعمال ومطوّر أعمال ومستشار، بغداد",
-    description:
-      "رائد أعمال ومطوّر أعمال ومستشار في بغداد. أبني مشاريعي الخاصة، وأساعد المشاريع الصغيرة في العراق على النمو بتشخيص واضح وخطة عملية ومساعدة فعلية في التنفيذ.",
+    home: {
+      title: "شاهين ك. فرجو — رائد أعمال ومطوّر أعمال ومستشار، بغداد",
+      description:
+        "رائد أعمال ومطوّر أعمال ومستشار في بغداد. أبني مشاريعي الخاصة، وأساعد المشاريع الصغيرة في العراق على النمو بتشخيص واضح وخطة عملية ومساعدة فعلية في التنفيذ.",
+    },
+    consulting: {
+      title: "استشارات تطوير الأعمال للمشاريع الصغيرة في بغداد والعراق — شاهين ك. فرجو",
+      description:
+        "تشخيص واضح وخطة عمل عملية ومساعدة فعلية في التنفيذ للمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق. ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي.",
+    },
     locale: "ar_IQ",
   },
   name: "شاهين ك. فرجو",
@@ -458,8 +567,15 @@ export const ar: Content = {
     lightMode: "الوضع الفاتح",
     switchLabel: "English",
     switchLang: "en",
+    book: "احجز مكالمة مجانية",
+    bookShort: "احجز مكالمة",
   },
-  whatsappGreeting: "مرحبًا شاهين، أود حجز مكالمة مجانية لمدة 30 دقيقة بخصوص عملي.",
+  whatsapp: {
+    home: "هلو شاهين، أريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+    consulting: "هلو شاهين، قريت صفحة الاستشارات وأريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+    package: "هلو شاهين، أريد أستفسر عن {package}، وأحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+  },
+  booking: "اختر موعدًا في تقويمي",
   hero: {
     location: "بغداد، العراق",
     nameFirst: "شاهين",
@@ -467,8 +583,8 @@ export const ar: Content = {
     role: "رائد أعمال — مطوّر أعمال — مستشار",
     tagline: "أصنع الأشياء التي تمنّيت لو كانت موجودة في *بغداد.*",
     cityAside: "Baghdad",
-    work: "شاهد أعمالي",
-    call: "احجز مكالمة مجانية",
+    business: "عندي مشروع",
+    build: "شوف شغلي",
   },
   about: {
     label: "نبذة",
@@ -477,13 +593,14 @@ export const ar: Content = {
     body: [
       "يقع عملي حيث تلتقي الأعمال بالتكنولوجيا: أفاوض على الشراكة، وأصمّم نموذج العمل، ثم أكتب الشيفرة التي تطلقه. هذا ما يتيح لي نقل الفكرة من حديث إلى منتج حي من دون أن يضيع شيء في الطريق.",
       "قبل العمل بشكل مستقل، عملت مطوّر أعمال ومستشارًا رئيسيًا للمشاريع في مرشد لتطوير الأعمال، حيث قدت مشاريع لشركتي تقنيات الحياة ومربع للبرمجيات. واليوم أكرّس وقتي لـ The IDEA وللاستشارات مع عدد محدود من المشاريع في الوقت نفسه.",
+      "وأنا أيضًا طالب بكالوريوس إدارة الأعمال، تخصص ريادة الأعمال، في الجامعة الأمريكية في العراق – بغداد، حيث أسّست جمعية الفنون والآداب وأرأسها.",
     ],
     facts: [
       { key: "المقر", value: "بغداد، العراق" },
       { key: "حاليًا", value: "أبني The IDEA · الاستشارات" },
       { key: "التركيز", value: "المشاريع الريادية · تطوير الأعمال · المنتجات" },
       { key: "سابقًا", value: "مرشد لتطوير الأعمال" },
-      { key: "الأدوات", value: "Next.js · TypeScript · Supabase" },
+      { key: "الدراسة", value: "بكالوريوس ريادة الأعمال، الجامعة الأمريكية في العراق" },
       { key: "اللغات", value: "العربية · الإنكليزية" },
     ],
   },
@@ -510,13 +627,13 @@ export const ar: Content = {
         title: "The Iraqi Curator",
         role: "منتج وتطوير",
         description: "يجمع أفضل ما في العراق في مكان واحد. قيد التطوير ضمن The IDEA.",
-        tags: ["قيد التطوير", "Next.js", "Turborepo"],
       },
       {
-        ...projectFacts.site,
-        title: "shaheenfarjo.com",
-        role: "تصميم وتطوير",
-        description: "هذا الموقع: Next.js وكرة WebGL والكثير من الآراء. مفتوح المصدر.",
+        ...projectFacts.sal,
+        title: "جمعية الفنون والآداب",
+        role: "المؤسس والرئيس",
+        description: "جمعية طلابية للفنون والآداب في الجامعة الأمريكية في العراق – بغداد. أسّستها وأرأسها.",
+        tags: ["جمعية طلابية", "AUIB"],
       },
     ],
   },
@@ -528,36 +645,55 @@ export const ar: Content = {
         title: "بناء المشاريع الريادية",
         body: "نقل الأفكار من ورقة على الطاولة إلى منتج حي: السوق، والنموذج، والإطلاق، وما بعده.",
       },
-      { title: "تطوير الأعمال", body: "الشراكات والمبيعات وخطط النمو، لمشاريعي وللمشاريع التي أقدّم لها الاستشارات." },
       {
         title: "المنتجات والبرمجة",
         body: "أطلق منتجاتي بنفسي باستخدام Next.js وTypeScript وSupabase، فتبقى الخطط واقعية بما يمكن بناؤه فعلًا.",
       },
-      { title: "المجتمع", body: "التعليم والتطوع والكتابة. استثمار في الجيل القادم من البنّائين في بغداد." },
+      {
+        title: "الفنون والآداب",
+        body: "أسّست جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، وأرأسها اليوم.",
+      },
     ],
+  },
+  consultingSummary: {
+    label: "الاستشارات",
+    title: "خطة واضحة، ومساعدة *في تنفيذها.*",
+    lead: "الشراكات والمبيعات وخطط النمو: أفعل ذلك لمشاريعي، وللمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق من خلال استشارات بأتعاب ثابتة.",
+    diagnostic: "ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي، يُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا.",
+    fullOffer: "اطّلع على العرض كاملًا",
+    ask: "استفسر عن التشخيص",
   },
   consulting: {
     label: "الاستشارات",
     title: "أساعد المشاريع الصغيرة على النمو *بخطة واضحة.*",
     lead: "لأصحاب المشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق: تشخيص واضح، وخطة عملية، ومساعدة فعلية في تنفيذها.",
+    shortOnTime: "ما عندك وقت؟",
+    toPackages: "شوف الباقات مباشرة",
     method: {
       label: "المنهجية",
       aside: "نبني · نُثبت · ننمو",
+      columns: { does: "ما أفعله", receive: "ما تحصل عليه", length: "المدة" },
       steps: [
         {
           number: "01",
           name: "نبني",
-          body: "نشخّص عملك ونصمّم الخطة معًا: ما الذي يعيقك، وما الذي يجب إصلاحه أولًا، وما قيمته.",
+          does: "نشخّص عملك ونصمّم الخطة معًا: ما الذي يعيقك، وما الذي يجب إصلاحه أولًا، وما قيمته.",
+          receive: "تشخيص مكتوب، والمشكلات مرتبة حسب أثرها، ومكاسب سريعة، وخارطة طريق لـ 12 شهرًا.",
+          length: "2–3 أسابيع (التشخيص)",
         },
         {
           number: "02",
           name: "نُثبت",
-          body: "ننفّذ الخطة مع فريقك ونقيس كل تغيير مقارنة بنقطة البداية، لتكون النتائج حقيقية لا وعودًا.",
+          does: "ننفّذ الخطة مع فريقك ونقيس كل تغيير مقارنة بنقطة البداية، لتكون النتائج حقيقية لا وعودًا.",
+          receive: "تغييرات تُنفَّذ مع فريقك، ويُقاس كل منها مقارنة بنقطة البداية.",
+          length: "تُحدَّد في العرض، مرحلة بمرحلة",
         },
         {
           number: "03",
           name: "*ننمو*",
-          body: "نحافظ على ما ينجح ونوسّعه، ونبقى إلى جانبك شهريًا حتى لا يتوقف الزخم.",
+          does: "نحافظ على ما ينجح ونوسّعه، ونبقى إلى جانبك شهريًا حتى لا يتوقف الزخم.",
+          receive: "متابعة أسبوعية، ومراجعة شهرية للمؤشرات، أو مساعدة عملية بدوام جزئي.",
+          length: "شهرًا بشهر",
         },
       ],
     },
@@ -607,45 +743,62 @@ export const ar: Content = {
     packages: {
       label: "طرق البدء",
       aside: "أتعاب ثابتة يُتفق عليها كتابيًا",
+      columns: { for: "لمن", length: "المدة", receive: "ما تحصل عليه", fee: "الأتعاب" },
       items: [
         {
           name: "التشخيص",
+          inSentence: "التشخيص",
+          for: "لأي صاحب مشروع يريد صورة واضحة قبل أن يلتزم بالمزيد.",
           length: "2–3 أسابيع",
-          description: "مراجعة شاملة لعملك، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لـ 12 شهرًا.",
+          receive: "مراجعة شاملة لعملك، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لـ 12 شهرًا.",
           price: "1,000,000 دينار عراقي",
-          priceNote: "يُخصم بالكامل إذا واصلت معنا خلال 30 يومًا",
+          priceNote: "يُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا.",
           tag: "ابدأ من هنا",
         },
         {
           name: "باقة النمو",
+          inSentence: "باقة النمو",
+          for: "للمشاريع المستعدة لتخطيط مرحلتها التالية كما ينبغي.",
           length: "8–10 أسابيع",
-          description: "التشخيص والاستراتيجية ودراسة السوق وخطة التسويق والنموذج المالي.",
+          receive: "التشخيص والاستراتيجية ودراسة السوق وخطة التسويق والنموذج المالي.",
         },
         {
           name: "باقة الإطلاق",
+          inSentence: "باقة الإطلاق",
+          for: "للمشاريع التي تريد الخطة، وتريد أن يُنجَز التجهيز معها.",
           length: "12–14 أسبوعًا",
-          description: "باقة النمو مع تجهيز الأنظمة والمتجر وإطلاق حملة.",
+          receive: "باقة النمو مع تجهيز الأنظمة والمتجر وإطلاق حملة.",
         },
         {
           name: "خطة العمل الكاملة",
+          inSentence: "خطة العمل الكاملة",
+          for: "لأصحاب المشاريع الذين يستعدون لعرض مشروعهم على مستثمرين أو جهات تمويل.",
           length: "12–16 أسبوعًا",
-          description: "جميع الخطط، وخطة عمل متكاملة، وعرض جاهز للمستثمرين.",
+          receive: "جميع الخطط، وخطة عمل متكاملة، وعرض جاهز للمستثمرين.",
         },
         {
           name: "الدعم الشهري",
+          inSentence: "الدعم الشهري",
+          for: "لأصحاب المشاريع الذين يريدون من يقف إلى جانبهم كل شهر.",
           length: "مستمر",
-          description: "متابعة أسبوعية، ومراجعة شهرية للمؤشرات، أو مساعدة عملية بدوام جزئي.",
+          receive: "متابعة أسبوعية، ومراجعة شهرية للمؤشرات، أو مساعدة عملية بدوام جزئي.",
         },
       ],
       feeLater: "تُحدَّد الأتعاب بعد المكالمة المجانية",
+      optionsNote:
+        "بعد المكالمة المجانية تصلك ثلاثة خيارات مكتوبة، كل منها مبني على هذه الباقات ومُفصَّل على حجم عملك، بأتعاب ثابتة، لتختار إلى أي مدى تريد أن تمضي.",
       note: "لكل عمل أتعاب ثابتة يُتفق عليها كتابيًا قبل البدء.",
+      ask: "استفسر عن هذه الباقة",
     },
     process: {
       label: "كيف نعمل",
       aside: "موافقتك عند كل خطوة",
       steps: [
         { name: "مكالمة مجانية", body: "30 دقيقة لفهم عملك وما تريد تحقيقه." },
-        { name: "العرض", body: "خلال 5 أيام عمل: ثلاثة خيارات بأتعاب ثابتة، لتختار النطاق المناسب." },
+        {
+          name: "العرض",
+          body: "خلال 5 أيام عمل: ثلاثة خيارات مبنية على هذه الباقات، لكل منها أتعاب ثابتة، لتختار النطاق المناسب.",
+        },
         { name: "العمل على مراحل", body: "تنتهي كل مرحلة بموافقتك قبل بدء التالية. لا مفاجآت." },
         { name: "التسليم والنتائج", body: "تقرير نتائج مقارنة بنقطة البداية، ومتابعة بعد 30 و90 يومًا." },
       ],
@@ -672,7 +825,7 @@ export const ar: Content = {
         {
           question: "كم التكلفة؟",
           answer:
-            "التشخيص بـ 1,000,000 دينار عراقي. أما الباقات الأكبر فلها أتعاب ثابتة حسب النطاق، وتصلك ثلاثة خيارات مكتوبة بعد المكالمة المجانية.",
+            "التشخيص بـ 1,000,000 دينار عراقي، ويُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا. أما الباقات الأكبر فلها أتعاب ثابتة حسب النطاق، وتصلك ثلاثة خيارات مكتوبة بعد المكالمة المجانية.",
         },
         {
           question: "هل تقدّم المشورة فقط أم تساعد في التنفيذ؟",
@@ -712,3 +865,7 @@ export const ar: Content = {
 }
 
 export const content: Record<Lang, Content> = { en, ar }
+
+export function packageGreeting(t: Content, pkg: Package) {
+  return t.whatsapp.package.replace("{package}", pkg.inSentence)
+}
