@@ -309,58 +309,8 @@
   mask: url("/sphere-mask.webp") center / contain no-repeat;
 }
 
-/* Outline marquee */
-.marquee-track {
-  animation: marquee 70s linear infinite;
-}
-
-.marquee-track[data-direction="reverse"] {
-  animation-direction: reverse;
-}
-
-[dir="rtl"] .marquee-track {
-  animation-name: marquee-rtl;
-}
-
-.marquee-item {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--muted);
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes marquee-rtl {
-  to {
-    transform: translateX(50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation-play-state: paused;
-  }
-}
-
-/* A2 package chooser: show only the package for the checked answer. Browsers
-   without :has() skip this rule and list every match instead. */
-.chooser:has(input[name="need"]) .chooser-result {
-  display: none;
-}
-
-.chooser:has(input[name="need"][value="0"]:checked) [data-choice="0"],
-.chooser:has(input[name="need"][value="1"]:checked) [data-choice="1"],
-.chooser:has(input[name="need"][value="2"]:checked) [data-choice="2"],
-.chooser:has(input[name="need"][value="3"]:checked) [data-choice="3"],
-.chooser:has(input[name="need"][value="4"]:checked) [data-choice="4"] {
-  display: block;
-}
-
-/* A21: print styles. Printing /consulting gives a one-color services sheet:
-   no header, menu, sphere, marquee or buttons, with link addresses spelled out. */
+/* Print styles: a one-color sheet with no header, menu, sphere or buttons,
+   link addresses spelled out, and every <details> opened by the inline script. */
 .print-only {
   display: none;
 }
@@ -381,9 +331,8 @@
   footer,
   details[data-menu],
   [data-sphere],
-  .marquee-track,
   .btn,
-  .chooser,
+  summary > [aria-hidden],
   form,
   noscript,
   a[href="#main"] {
@@ -424,13 +373,3 @@
   }
 }
 
-/* A10: each note starts on its own printed page, without the note list */
-@media print {
-  .note + .note {
-    break-before: page;
-  }
-
-  nav[aria-label] {
-    display: none;
-  }
-}

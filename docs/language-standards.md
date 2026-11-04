@@ -27,11 +27,16 @@ search. Iraqi Arabic is used where the visitor or Shaheen is speaking directly.
 ## Arabic: spelling and form
 
 - **Tanween al-fath** goes on the letter before the alif: «شكرًا»، «معًا»، «شهريًا».
-- **Brand names in body copy:** «ايديا» for The IDEA and «الدرويد» for Droid. The
-  Latin name appears only as a title paired with the Arabic name. «پاس» for Pass.
-- **Names kept in Latin script:** The Iraqi Curator, product and module names
-  without an Arabic form (Store, Plus, Club, Partners, Staff, Bulbs, Teachers'
-  Lounge, M7, I1…), tech names (Next.js, Gemini…), and web addresses.
+- **One language per page.** No Arabic on the English pages and no English on
+  the Arabic pages. Exceptions: the language switch, which names the other
+  language in its own script; web addresses, email, phone numbers and handles;
+  module codes (M7, I1…); and The Iraqi Curator, whose name stays as written.
+- **Brand and product names in Arabic:** «ايديا» for The IDEA, «الدرويد» for Droid,
+  «پاس» for Pass, «ميرشانيا» for Merchania; Store «المتجر»، Plus «بلس»، Club «النادي»،
+  Partners «منصة الشركاء»، Staff «لوحة الفريق»، Bulbs «نقاط بلبز»، Teachers' Lounge
+  «غرفة المعلمين». Tech names are written in Arabic too (جيميناي، غوغل، فيرسل، جافاسكربت).
+- **English lists:** serial (Oxford) comma before the last item.
+- **Arabic punctuation:** «،» «؛» «؟».
 - **Months:** Iraqi (Levantine) month names: كانون الثاني، شباط، آذار، نيسان،
   أيار، حزيران، تموز، آب، أيلول، تشرين الأول، تشرين الثاني، كانون الأول.
 - **Numbers:** Western digits (1,000,000) for prices, phone numbers, years,

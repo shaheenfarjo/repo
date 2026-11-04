@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { caseSlugs, contact, content, en, findProject, metaFor, pagePath, siteUrl, socials, type CaseSlug, type Lang, type Page, type ProjectSlug } from "@/lib/content"
+import { contact, content, en, pagePath, siteUrl, socialUrls, type Lang, type Page } from "@/lib/content"
 
 const personId = `${siteUrl}/#person`
 const serviceId = `${siteUrl}/#consulting`
@@ -14,22 +14,22 @@ function jsonLd(lang: Lang, page: Page) {
     jobTitle: "Entrepreneur, Business Developer & Consultant",
     url: siteUrl,
     address: { "@type": "PostalAddress", addressLocality: "Baghdad", addressCountry: "IQ" },
-    sameAs: [...socials.map((social) => social.url), contact.aboutMe],
+    sameAs: [...Object.values(socialUrls), contact.aboutMe],
   }
   const service: Record<string, unknown> = {
     "@type": "ProfessionalService",
     "@id": serviceId,
     name: "Shaheen K. Farjo — Consulting",
     description: t.consulting.lead,
-    url: `${siteUrl}${pagePath(lang, "consulting")}`,
+    url: `${siteUrl}${pagePath(lang)}#consulting`,
     telephone: contact.phoneE164,
     email: contact.email,
     areaServed: { "@type": "Country", name: "Iraq" },
     address: { "@type": "PostalAddress", addressLocality: "Baghdad", addressCountry: "IQ" },
     founder: { "@id": personId },
   }
-  if (page === "consulting") {
-    // A20: each package as a Service offer, with its published fee
+  if (page === "home") {
+    // Each package as a Service offer, with its published fee
     service.hasOfferCatalog = {
       "@type": "OfferCatalog",
       name: t.consulting.packages.label,
@@ -57,70 +57,47 @@ function jsonLd(lang: Lang, page: Page) {
     }
   }
   const graph: Record<string, unknown>[] = [person, service]
-  if (page === "workshops") {
-    const w = t.workshopsPage
-    graph.push({
-      "@type": "Service",
-      name: `${en.name} — ${w.label}`,
-      description: w.lead,
-      url: `${siteUrl}${pagePath(lang, page)}`,
-      provider: { "@id": serviceId },
-      areaServed: { "@type": "Country", name: "Iraq" },
-      offers: {
-        "@type": "Offer",
-        priceSpecification: { "@type": "PriceSpecification", priceCurrency: "IQD", minPrice: w.fee.min, maxPrice: w.fee.max },
+  if (page === "home") {
+    const w = t.workshops
+    const workshops = t.consulting.services.items[t.consulting.services.items.length - 1]
+    ;(service.hasOfferCatalog as { itemListElement: unknown[] }).itemListElement.push({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: workshops.title,
+        description: workshops.summary,
+        provider: { "@id": serviceId },
+        areaServed: { "@type": "Country", name: "Iraq" },
       },
+      priceSpecification: { "@type": "PriceSpecification", priceCurrency: "IQD", minPrice: w.fee.min, maxPrice: w.fee.max },
     })
-  }
-  // C5: a project page is about the project, as a creative work by the person
-  if (page.startsWith("work/")) {
-    const project = findProject(t, page.slice(5) as ProjectSlug)
-    graph.push({
-      "@type": "WebPage",
-      name: metaFor(t, page).title,
-      url: `${siteUrl}${pagePath(lang, page)}`,
-      inLanguage: lang,
-      about: {
-        "@type": "CreativeWork",
-        name: project.title,
-        description: project.description,
-        creator: { "@id": personId },
-        ...(project.href ? { url: project.href } : {}),
-      },
-    })
-  }
-  // A11: case studies as articles by the person
-  if (page.startsWith("cases/") && caseSlugs.includes(page.slice(6) as CaseSlug)) {
-    const study = t.cases[page.slice(6) as CaseSlug]
-    graph.push({
-      "@type": "Article",
-      headline: study.title.replace(/\*/g, ""),
-      description: study.intro,
-      url: `${siteUrl}${pagePath(lang, page)}`,
-      inLanguage: lang,
-      author: { "@id": personId },
-    })
-  }
-  // A10: the notes as a blog with three posts (no dates were supplied, so none are given)
-  if (page === "notes") {
+    // The notes, as a blog on the landing page (no dates were supplied, so none are given)
     graph.push({
       "@type": "Blog",
-      name: t.meta.notes.title,
-      description: t.meta.notes.description,
-      url: `${siteUrl}${pagePath(lang, page)}`,
+      name: t.notes.title.replace(/\*/g, ""),
+      url: `${siteUrl}${pagePath(lang)}#notes`,
       inLanguage: lang,
       author: { "@id": personId },
       blogPost: t.notes.items.map((note) => ({
         "@type": "BlogPosting",
         headline: note.title,
-        url: `${siteUrl}${pagePath(lang, page)}#${note.id}`,
+        url: `${siteUrl}${pagePath(lang)}#${note.id}`,
         inLanguage: lang,
         author: { "@id": personId },
       })),
     })
-  }
-  // A9: the sample is labeled as a sample in its structured data too
-  if (page === "sample-diagnostic") {
+    // The projects, as creative works by the person
+    graph.push(
+      ...t.work.projects.map((project) => ({
+        "@type": "CreativeWork",
+        name: project.title,
+        description: project.description,
+        creator: { "@id": personId },
+        ...(project.href ? { url: project.href } : {}),
+      })),
+    )
+  } else {
+    // The sample is labeled as a sample in its structured data too
     graph.push({
       "@type": "WebPage",
       name: t.meta[page].title,
@@ -128,34 +105,23 @@ function jsonLd(lang: Lang, page: Page) {
       url: `${siteUrl}${pagePath(lang, page)}`,
       inLanguage: lang,
       author: { "@id": personId },
-      about: { "@id": serviceId },
-    })
-  }
-  if (page === "method" || page === "tools" || page === "now" || page === "privacy") {
-    graph.push({
-      "@type": "WebPage",
-      name: t.meta[page].title,
-      description: t.meta[page].description,
-      url: `${siteUrl}${pagePath(lang, page)}`,
-      inLanguage: lang,
-      author: { "@id": personId },
-      ...(page === "tools" || page === "method" ? { about: { "@id": serviceId } } : {}),
+      ...(page === "privacy" ? {} : { about: { "@id": serviceId } }),
     })
   }
   return { "@context": "https://schema.org", "@graph": graph }
 }
 
-// One share image per page and language
-function ogImage(lang: Lang, page: Page) {
-  return `${siteUrl}/og${page === "consulting" ? "-consulting" : ""}${lang === "ar" ? "-ar" : ""}.png`
+// One share image per language
+function ogImage(lang: Lang) {
+  return `${siteUrl}/og${lang === "ar" ? "-ar" : ""}.png`
 }
 
 export function PageHead({ lang, page }: { lang: Lang; page: Page }) {
   const t = content[lang]
   const other = content[t.header.switchLang]
-  const meta = metaFor(t, page)
+  const meta = t.meta[page]
   const url = `${siteUrl}${pagePath(lang, page)}`
-  const image = ogImage(lang, page)
+  const image = ogImage(lang)
   return (
     <Head>
       <title>{meta.title}</title>
