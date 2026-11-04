@@ -67,9 +67,14 @@ type Package = {
   for: string
   length: string
   receive: string
-  // D1: a "from" price goes here once it is decided. Without one, the package
-  // shows packages.feeLater ("Fee shared after the free call").
+  // The fee as shown on the page; without one, the package shows
+  // packages.feeLater ("Fee shared after the free call")
   price?: string
+  // The same fee for structured data: amount in IQD, whether it is a starting
+  // price, and whether it is charged monthly
+  amount?: number
+  from?: boolean
+  monthly?: boolean
   priceNote?: string
   tag?: string
 }
@@ -179,12 +184,11 @@ export type Content = {
   notFound: { title: string; body: string; back: string }
 }
 
-// Facts shared by both languages. Dates for Droid and The Iraqi Curator are as
-// first published; the SAL date is left out until confirmed.
+// Links and tags shared by both languages
 const projectFacts = {
   idea: { href: "https://theideaiq.com", tags: ["Venture", "Next.js", "Supabase"] },
-  droid: { date: "2026", tags: ["AI", "Gemini", "Telegram"] },
-  curator: { date: "2026", href: "https://github.com/theideaiq/theiraqicurator", tags: ["Next.js", "Supabase", "Turborepo"] },
+  droid: { tags: ["AI", "Gemini", "Telegram"] },
+  curator: { href: "https://github.com/theideaiq/theiraqicurator", tags: ["Next.js", "Supabase", "Turborepo"] },
   sal: { href: "https://auibsal.org" },
 }
 
@@ -268,10 +272,11 @@ export const en: Content = {
         arabic: "ايديا",
         role: "Founder",
         description:
-          "A home for digital products made in and for Iraq, with a shared platform for web, admin, payments and data.",
+          "One Pass to buy, rent, bid and share games, music, books, films and gear in Iraq, from The IDEA and from shops, delivered to your door.",
       },
       {
         ...projectFacts.droid,
+        date: "2022 — Now",
         title: "Droid",
         role: "Product & build",
         description:
@@ -279,12 +284,14 @@ export const en: Content = {
       },
       {
         ...projectFacts.curator,
+        date: "2026 · In progress",
         title: "The Iraqi Curator",
         role: "Product & build",
         description: "Curating the best of Iraq in one place. Currently in development under The IDEA.",
       },
       {
         ...projectFacts.sal,
+        date: "2026 — Now",
         title: "AUIB Society of Arts and Letters",
         role: "Founder & president",
         description:
@@ -409,6 +416,7 @@ export const en: Content = {
           length: "2–3 weeks",
           receive: "A full review of your business, the problems ranked by impact, quick wins and a 12-month roadmap.",
           price: "1,000,000 IQD",
+          amount: 1000000,
           priceNote: "Credited in full toward any package you start within 30 days.",
           tag: "Start here",
         },
@@ -418,13 +426,19 @@ export const en: Content = {
           for: "Businesses ready to plan their next stage properly.",
           length: "8–10 weeks",
           receive: "Diagnostic, strategy, market study, marketing plan and financial model.",
+          price: "From 3,000,000 IQD",
+          amount: 3000000,
+          from: true,
         },
         {
           name: "Launch Ready",
           inSentence: "the Launch Ready package",
-          for: "Businesses that want the plan, and the setup done with them.",
+          for: "Businesses that want the plan, and help setting it up.",
           length: "12–14 weeks",
           receive: "The Growth Sprint plus systems, shop setup and a launched campaign.",
+          price: "From 5,000,000 IQD",
+          amount: 5000000,
+          from: true,
         },
         {
           name: "Full Business Plan",
@@ -432,6 +446,9 @@ export const en: Content = {
           for: "Founders preparing to present their business to investors or funders.",
           length: "12–16 weeks",
           receive: "Every plan, a complete business plan and an investor-ready pitch deck.",
+          price: "From 4,500,000 IQD",
+          amount: 4500000,
+          from: true,
         },
         {
           name: "Monthly support",
@@ -439,6 +456,10 @@ export const en: Content = {
           for: "Owners who want someone in their corner every month.",
           length: "Ongoing",
           receive: "Weekly check-ins, monthly KPI reviews, or part-time hands-on help.",
+          price: "From 750,000 IQD a month",
+          amount: 750000,
+          from: true,
+          monthly: true,
         },
       ],
       feeLater: "Fee shared after the free call",
@@ -547,7 +568,7 @@ export const ar: Content = {
     consulting: {
       title: "استشارات تطوير الأعمال للمشاريع الصغيرة في بغداد والعراق — شاهين ك. فرجو",
       description:
-        "تشخيص واضح وخطة عمل عملية ومساعدة فعلية في التنفيذ للمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق. ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي.",
+        "تشخيص واضح وخطة عملية ومساعدة فعلية في التنفيذ للمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق. ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي.",
     },
     locale: "ar_IQ",
   },
@@ -571,9 +592,9 @@ export const ar: Content = {
     bookShort: "احجز مكالمة",
   },
   whatsapp: {
-    home: "هلو شاهين، أريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
-    consulting: "هلو شاهين، قريت صفحة الاستشارات وأريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
-    package: "هلو شاهين، أريد أستفسر عن {package}، وأحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+    home: "هلو شاهين، أريد أحجز مكالمة مجانية نص ساعة نحجي بيها عن شغلي.",
+    consulting: "هلو شاهين، قريت صفحة الاستشارات وأريد أحجز مكالمة مجانية نص ساعة نحجي بيها عن شغلي.",
+    package: "هلو شاهين، أريد أسأل عن {package} وأحجز مكالمة مجانية نص ساعة نحجي بيها عن شغلي.",
   },
   booking: "اختر موعدًا في تقويمي",
   hero: {
@@ -592,15 +613,15 @@ export const ar: Content = {
     lead: "أنا شاهين، رائد أعمال ومطوّر أعمال ومستشار في بغداد. أبني المنتجات والمنصات التي تمنّيت أن تكون في مدينتي، وأساعد أصحاب المشاريع على بناء مشاريعهم.",
     body: [
       "يقع عملي حيث تلتقي الأعمال بالتكنولوجيا: أفاوض على الشراكة، وأصمّم نموذج العمل، ثم أكتب الشيفرة التي تطلقه. هذا ما يتيح لي نقل الفكرة من حديث إلى منتج حي من دون أن يضيع شيء في الطريق.",
-      "قبل العمل بشكل مستقل، عملت مطوّر أعمال ومستشارًا رئيسيًا للمشاريع في مرشد لتطوير الأعمال، حيث قدت مشاريع لشركتي تقنيات الحياة ومربع للبرمجيات. واليوم أكرّس وقتي لـ The IDEA وللاستشارات مع عدد محدود من المشاريع في الوقت نفسه.",
-      "وأنا أيضًا طالب بكالوريوس إدارة الأعمال، تخصص ريادة الأعمال، في الجامعة الأمريكية في العراق – بغداد، حيث أسّست جمعية الفنون والآداب وأرأسها.",
+      "قبل العمل بشكل مستقل، عملت مطوّر أعمال ومستشارًا رئيسيًا للمشاريع في مرشد لتطوير الأعمال، حيث قدت مشاريع لشركتي تقنيات الحياة ومربع للبرمجيات. واليوم أكرّس وقتي لايديا وللاستشارات مع عدد محدود من المشاريع في الوقت نفسه.",
+      "وأدرس أيضًا بكالوريوس إدارة الأعمال، تخصص ريادة الأعمال، في الجامعة الأمريكية في العراق – بغداد، حيث أسّست جمعية الفنون والآداب وأرأسها.",
     ],
     facts: [
       { key: "المقر", value: "بغداد، العراق" },
-      { key: "حاليًا", value: "أبني The IDEA · الاستشارات" },
+      { key: "حاليًا", value: "أبني ايديا · الاستشارات" },
       { key: "التركيز", value: "المشاريع الريادية · تطوير الأعمال · المنتجات" },
       { key: "سابقًا", value: "مرشد لتطوير الأعمال" },
-      { key: "الدراسة", value: "بكالوريوس ريادة الأعمال، الجامعة الأمريكية في العراق" },
+      { key: "الدراسة", value: "بكالوريوس إدارة الأعمال (ريادة الأعمال)، الجامعة الأمريكية في العراق – بغداد" },
       { key: "اللغات", value: "العربية · الإنكليزية" },
     ],
   },
@@ -614,22 +635,26 @@ export const ar: Content = {
         title: "The IDEA",
         arabic: "ايديا",
         role: "المؤسس",
-        description: "بيت للمنتجات الرقمية المصنوعة في العراق ولأجله، مع منصة مشتركة للويب والإدارة والمدفوعات والبيانات.",
+        description: "پاس واحد لتشتري وتستأجر وتزايد وتشارك الألعاب والموسيقى والكتب والأفلام والأجهزة في العراق، من ايديا ومن المتاجر، مع التوصيل إلى بابك.",
       },
       {
         ...projectFacts.droid,
+        date: "2022 — الآن",
         title: "Droid",
+        arabic: "الدرويد",
         role: "منتج وتطوير",
-        description: "مساعد على تيليغرام يعمل بنموذج Gemini من Google، وهو جزء من منظومة The IDEA. يصل إلى الناس حيث هم أصلًا.",
+        description: "مساعد على تيليغرام يعمل بنموذج Gemini من Google، وهو جزء من منظومة ايديا. يصل إلى الناس حيث هم أصلًا.",
       },
       {
         ...projectFacts.curator,
+        date: "2026 · قيد التطوير",
         title: "The Iraqi Curator",
         role: "منتج وتطوير",
-        description: "يجمع أفضل ما في العراق في مكان واحد. قيد التطوير ضمن The IDEA.",
+        description: "يجمع أفضل ما في العراق في مكان واحد. قيد التطوير ضمن ايديا.",
       },
       {
         ...projectFacts.sal,
+        date: "2026 — الآن",
         title: "جمعية الفنون والآداب",
         role: "المؤسس والرئيس",
         description: "جمعية طلابية للفنون والآداب في الجامعة الأمريكية في العراق – بغداد. أسّستها وأرأسها.",
@@ -658,8 +683,8 @@ export const ar: Content = {
   consultingSummary: {
     label: "الاستشارات",
     title: "خطة واضحة، ومساعدة *في تنفيذها.*",
-    lead: "الشراكات والمبيعات وخطط النمو: أفعل ذلك لمشاريعي، وللمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق من خلال استشارات بأتعاب ثابتة.",
-    diagnostic: "ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي، يُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا.",
+    lead: "الشراكات والمبيعات وخطط النمو: أعمل عليها في مشاريعي، وأقدّمها للمشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق، باستشارات بأتعاب ثابتة.",
+    diagnostic: "ابدأ بالتشخيص: 2–3 أسابيع، 1,000,000 دينار عراقي، ويُخصم المبلغ بالكامل من أي باقة تبدأها خلال 30 يومًا.",
     fullOffer: "اطّلع على العرض كاملًا",
     ask: "استفسر عن التشخيص",
   },
@@ -672,20 +697,20 @@ export const ar: Content = {
     method: {
       label: "المنهجية",
       aside: "نبني · نُثبت · ننمو",
-      columns: { does: "ما أفعله", receive: "ما تحصل عليه", length: "المدة" },
+      columns: { does: "ما أقوم به", receive: "ما تحصل عليه", length: "المدة" },
       steps: [
         {
           number: "01",
           name: "نبني",
           does: "نشخّص عملك ونصمّم الخطة معًا: ما الذي يعيقك، وما الذي يجب إصلاحه أولًا، وما قيمته.",
-          receive: "تشخيص مكتوب، والمشكلات مرتبة حسب أثرها، ومكاسب سريعة، وخارطة طريق لـ 12 شهرًا.",
+          receive: "تشخيص مكتوب، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لمدة 12 شهرًا.",
           length: "2–3 أسابيع (التشخيص)",
         },
         {
           number: "02",
           name: "نُثبت",
           does: "ننفّذ الخطة مع فريقك ونقيس كل تغيير مقارنة بنقطة البداية، لتكون النتائج حقيقية لا وعودًا.",
-          receive: "تغييرات تُنفَّذ مع فريقك، ويُقاس كل منها مقارنة بنقطة البداية.",
+          receive: "تغييرات تُنفَّذ مع فريقك، ويُقاس كل منها بالمقارنة مع نقطة البداية.",
           length: "تُحدَّد في العرض، مرحلة بمرحلة",
         },
         {
@@ -693,7 +718,7 @@ export const ar: Content = {
           name: "*ننمو*",
           does: "نحافظ على ما ينجح ونوسّعه، ونبقى إلى جانبك شهريًا حتى لا يتوقف الزخم.",
           receive: "متابعة أسبوعية، ومراجعة شهرية للمؤشرات، أو مساعدة عملية بدوام جزئي.",
-          length: "شهرًا بشهر",
+          length: "شهرًا بعد شهر",
         },
       ],
     },
@@ -750,24 +775,31 @@ export const ar: Content = {
           inSentence: "التشخيص",
           for: "لأي صاحب مشروع يريد صورة واضحة قبل أن يلتزم بالمزيد.",
           length: "2–3 أسابيع",
-          receive: "مراجعة شاملة لعملك، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لـ 12 شهرًا.",
+          receive: "مراجعة شاملة لعملك، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لمدة 12 شهرًا.",
           price: "1,000,000 دينار عراقي",
-          priceNote: "يُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا.",
+          amount: 1000000,
+          priceNote: "يُخصم المبلغ بالكامل من أي باقة تبدأها خلال 30 يومًا.",
           tag: "ابدأ من هنا",
         },
         {
           name: "باقة النمو",
           inSentence: "باقة النمو",
-          for: "للمشاريع المستعدة لتخطيط مرحلتها التالية كما ينبغي.",
+          for: "للمشاريع المستعدة لتخطيط مرحلتها التالية بشكل صحيح.",
           length: "8–10 أسابيع",
           receive: "التشخيص والاستراتيجية ودراسة السوق وخطة التسويق والنموذج المالي.",
+          price: "ابتداءً من 3,000,000 دينار عراقي",
+          amount: 3000000,
+          from: true,
         },
         {
           name: "باقة الإطلاق",
           inSentence: "باقة الإطلاق",
-          for: "للمشاريع التي تريد الخطة، وتريد أن يُنجَز التجهيز معها.",
+          for: "للمشاريع التي تريد الخطة، ومن يساعدها في تجهيزها.",
           length: "12–14 أسبوعًا",
           receive: "باقة النمو مع تجهيز الأنظمة والمتجر وإطلاق حملة.",
+          price: "ابتداءً من 5,000,000 دينار عراقي",
+          amount: 5000000,
+          from: true,
         },
         {
           name: "خطة العمل الكاملة",
@@ -775,6 +807,9 @@ export const ar: Content = {
           for: "لأصحاب المشاريع الذين يستعدون لعرض مشروعهم على مستثمرين أو جهات تمويل.",
           length: "12–16 أسبوعًا",
           receive: "جميع الخطط، وخطة عمل متكاملة، وعرض جاهز للمستثمرين.",
+          price: "ابتداءً من 4,500,000 دينار عراقي",
+          amount: 4500000,
+          from: true,
         },
         {
           name: "الدعم الشهري",
@@ -782,11 +817,15 @@ export const ar: Content = {
           for: "لأصحاب المشاريع الذين يريدون من يقف إلى جانبهم كل شهر.",
           length: "مستمر",
           receive: "متابعة أسبوعية، ومراجعة شهرية للمؤشرات، أو مساعدة عملية بدوام جزئي.",
+          price: "ابتداءً من 750,000 دينار عراقي شهريًا",
+          amount: 750000,
+          from: true,
+          monthly: true,
         },
       ],
       feeLater: "تُحدَّد الأتعاب بعد المكالمة المجانية",
       optionsNote:
-        "بعد المكالمة المجانية تصلك ثلاثة خيارات مكتوبة، كل منها مبني على هذه الباقات ومُفصَّل على حجم عملك، بأتعاب ثابتة، لتختار إلى أي مدى تريد أن تمضي.",
+        "بعد المكالمة المجانية تصلك ثلاثة خيارات مكتوبة، كل منها مبني على هذه الباقات ومناسب لحجم عملك، بأتعاب ثابتة، لتختار ما يناسبك.",
       note: "لكل عمل أتعاب ثابتة يُتفق عليها كتابيًا قبل البدء.",
       ask: "استفسر عن هذه الباقة",
     },
@@ -825,7 +864,7 @@ export const ar: Content = {
         {
           question: "كم التكلفة؟",
           answer:
-            "التشخيص بـ 1,000,000 دينار عراقي، ويُخصم بالكامل من أي باقة تبدأها خلال 30 يومًا. أما الباقات الأكبر فلها أتعاب ثابتة حسب النطاق، وتصلك ثلاثة خيارات مكتوبة بعد المكالمة المجانية.",
+            "التشخيص بـ 1,000,000 دينار عراقي، ويُخصم المبلغ بالكامل من أي باقة تبدأها خلال 30 يومًا. أما الباقات الأكبر فلها أتعاب ثابتة حسب النطاق، وتصلك ثلاثة خيارات مكتوبة بعد المكالمة المجانية.",
         },
         {
           question: "هل تقدّم المشورة فقط أم تساعد في التنفيذ؟",

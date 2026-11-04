@@ -29,8 +29,7 @@ function jsonLd(lang: Lang, page: Page) {
     founder: { "@id": personId },
   }
   if (page === "consulting") {
-    // A20: each package as a Service offer; only prices that are published on
-    // the page are given
+    // A20: each package as a Service offer, with its published fee
     service.hasOfferCatalog = {
       "@type": "OfferCatalog",
       name: t.consulting.packages.label,
@@ -43,7 +42,17 @@ function jsonLd(lang: Lang, page: Page) {
           provider: { "@id": serviceId },
           areaServed: { "@type": "Country", name: "Iraq" },
         },
-        ...(item.price ? { price: item.price.replace(/[^\d]/g, ""), priceCurrency: "IQD" } : {}),
+        ...(item.amount
+          ? {
+              priceSpecification: {
+                "@type": item.monthly ? "UnitPriceSpecification" : "PriceSpecification",
+                priceCurrency: "IQD",
+                // "From" prices are starting points, not the fee itself
+                ...(item.from ? { minPrice: item.amount } : { price: item.amount }),
+                ...(item.monthly ? { unitCode: "MON" } : {}),
+              },
+            }
+          : {}),
       })),
     }
   }
