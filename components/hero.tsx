@@ -1,17 +1,18 @@
-import { coordinates, whatsappUrl, type Content } from "@/lib/content"
+import { coordinates, pagePath, type Content } from "@/lib/content"
 import { Rich } from "@/lib/rich"
-import { container, external } from "./ui"
+import { container } from "./ui"
 
 export function Hero({ t }: { t: Content }) {
   const h = t.hero
-  const workButton = (
-    <a key="work" href="#work" className="btn btn-ghost t-button">
-      {h.work}
+  // C2: two paths, for business owners and for people curious about the work
+  const businessButton = (
+    <a key="business" href={pagePath(t.lang, "consulting")} className="btn btn-solid t-button">
+      {h.business}
     </a>
   )
-  const callButton = (
-    <a key="call" href={whatsappUrl(t.whatsappGreeting)} {...external} className="btn btn-solid t-button">
-      {h.call}
+  const buildButton = (
+    <a key="build" href="#work" className="btn btn-ghost t-button">
+      {h.build}
     </a>
   )
 
@@ -45,7 +46,8 @@ export function Hero({ t }: { t: Content }) {
             {h.cityAside}
           </p>
           <div className="mt-8 flex flex-wrap gap-3 md:justify-end">
-            {t.lang === "ar" ? [callButton, workButton] : [workButton, callButton]}
+            {businessButton}
+            {buildButton}
           </div>
         </div>
       </div>

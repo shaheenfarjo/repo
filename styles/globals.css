@@ -46,7 +46,7 @@
 
   --shadow-*: initial;
 
-  --breakpoint-nav: 1000px;
+  --breakpoint-nav: 1280px;
 }
 
 @layer base {

@@ -1,3 +1,4 @@
+import { contact, type Content } from "@/lib/content"
 import type { ReactNode } from "react"
 import { Rich } from "@/lib/rich"
 
@@ -50,5 +51,16 @@ export function ArrowUpRight({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 24 24" aria-hidden="true" className={`shrink-0 rtl:-scale-x-100 ${className}`}>
       <path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" strokeWidth="1.25" />
     </svg>
+  )
+}
+
+// A14: a link to the appointment page, beside WhatsApp. Renders nothing until
+// contact.bookingUrl is set.
+export function BookingLink({ t }: { t: Content }) {
+  if (!contact.bookingUrl) return null
+  return (
+    <a href={contact.bookingUrl} {...external} className="btn btn-ghost t-button">
+      {t.booking}
+    </a>
   )
 }
