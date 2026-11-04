@@ -533,6 +533,8 @@ export const en: Content = {
   },
 }
 
+// Arabic: Modern Standard Arabic for headings, fees, promises and answers;
+// Iraqi Arabic for the visitor's own WhatsApp messages and short conversational buttons.
 export const ar: Content = {
   lang: "ar",
   dir: "rtl",
@@ -569,9 +571,9 @@ export const ar: Content = {
     bookShort: "احجز مكالمة",
   },
   whatsapp: {
-    home: "مرحبًا شاهين، أود حجز مكالمة مجانية لمدة 30 دقيقة بخصوص عملي.",
-    consulting: "مرحبًا شاهين، قرأت صفحة الاستشارات وأود حجز مكالمة مجانية لمدة 30 دقيقة بخصوص عملي.",
-    package: "مرحبًا شاهين، أود الاستفسار عن {package}، وحجز مكالمة مجانية لمدة 30 دقيقة بخصوص عملي.",
+    home: "هلو شاهين، أريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+    consulting: "هلو شاهين، قريت صفحة الاستشارات وأريد أحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
+    package: "هلو شاهين، أريد أستفسر عن {package}، وأحجز مكالمة مجانية 30 دقيقة نتكلم بيها عن شغلي.",
   },
   booking: "اختر موعدًا في تقويمي",
   hero: {
@@ -581,8 +583,8 @@ export const ar: Content = {
     role: "رائد أعمال — مطوّر أعمال — مستشار",
     tagline: "أصنع الأشياء التي تمنّيت لو كانت موجودة في *بغداد.*",
     cityAside: "Baghdad",
-    business: "أدير مشروعًا",
-    build: "شاهد ما أبنيه",
+    business: "عندي مشروع",
+    build: "شوف شغلي",
   },
   about: {
     label: "نبذة",
@@ -665,8 +667,8 @@ export const ar: Content = {
     label: "الاستشارات",
     title: "أساعد المشاريع الصغيرة على النمو *بخطة واضحة.*",
     lead: "لأصحاب المشاريع الصغيرة والعلامات التي تبيع عبر إنستغرام وواتساب في العراق: تشخيص واضح، وخطة عملية، ومساعدة فعلية في تنفيذها.",
-    shortOnTime: "وقتك ضيق؟",
-    toPackages: "انتقل إلى الباقات",
+    shortOnTime: "ما عندك وقت؟",
+    toPackages: "شوف الباقات مباشرة",
     method: {
       label: "المنهجية",
       aside: "نبني · نُثبت · ننمو",
