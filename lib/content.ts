@@ -5,7 +5,20 @@
 // in English, weight 600 in Arabic (Arabic has no italic). See <Rich>.
 
 export type Lang = "en" | "ar"
-export type Page = "home" | "consulting" | "method" | "workshops" | "tools" | "now" | "privacy"
+export type KnownPage =
+  | "home"
+  | "consulting"
+  | "method"
+  | "workshops"
+  | "tools"
+  | "now"
+  | "privacy"
+  | "sample-diagnostic"
+  | "notes"
+export type ProjectSlug = "the-idea" | "merchania" | "droid" | "the-iraqi-curator" | "sal"
+export type CaseSlug = "the-idea" | "sal"
+// Project pages (C5) and case pages (A11) live under /work and /cases
+export type Page = KnownPage | `work/${ProjectSlug}` | `cases/${CaseSlug}`
 
 export const siteUrl = "https://shaheenfarjo.com"
 
@@ -77,6 +90,8 @@ type Package = {
   name: string
   // The package's name inside a sentence ("the Diagnostic"), for WhatsApp messages
   inSentence: string
+  // Links to the sample report (A9)
+  sample?: string
   for: string
   length: string
   receive: string
@@ -93,6 +108,7 @@ type Package = {
 }
 
 export type Project = {
+  slug: ProjectSlug
   // Left out until confirmed, rather than guessed
   date?: string
   title: string
@@ -101,12 +117,28 @@ export type Project = {
   role: string
   description: string
   tags: string[]
+  // C5: only the fields Shaheen supplied for this project
+  detail: { roleDates: string; context?: string; constraints?: string; did?: string; truth?: string }
+  caseSlug?: CaseSlug
+}
+
+// A simple table: rendered as a table on wide screens and stacked rows on phones
+export type Table = { title: string; columns: string[]; rows: string[][]; footer?: string[] }
+
+export type CaseStudy = {
+  title: string
+  intro: string
+  timeline?: { title: string; columns: [string, string]; rows: [string, string][] }
+  decisions: { title: string; items: { title: string; body: string }[] }
+  built?: { title: string; body: string }
+  truth: { title: string; body: string }
+  unproven: { title: string; body: string }
 }
 
 export type Content = {
   lang: Lang
   dir: "ltr" | "rtl"
-  meta: Record<Page, { title: string; description: string }> & { locale: string }
+  meta: Record<KnownPage, { title: string; description: string }> & { locale: string }
   name: string
   skipLink: string
   header: {
@@ -147,6 +179,28 @@ export type Content = {
     facts: { key: string; value: string }[]
   }
   work: { label: string; title: string; projects: Project[] }
+  projectLabels: {
+    roleDates: string
+    context: string
+    constraints: string
+    did: string
+    truth: string
+    visit: string
+    readCase: string
+    back: string
+    backToProject: string
+  }
+  cases: Record<CaseSlug, CaseStudy>
+  sample: {
+    banner: string
+    title: string
+    summaryTitle: string
+    summary: string
+    score: { key: string; value: string }
+    next: { key: string; value: string }
+    tables: Table[]
+  }
+  notes: { label: string; title: string; intro: string; items: { id: string; title: string; paragraphs: string[] }[] }
   what: { label: string; title: string; items: { title: string; body: string }[] }
   consultingSummary: {
     label: string
@@ -263,7 +317,7 @@ export type Content = {
     topicsLabel: string
     ask: string
   }
-  footerLinks: Record<"workshops" | "now" | "tools" | "privacy", string>
+  footerLinks: Record<"workshops" | "notes" | "now" | "tools" | "privacy", string>
   marquee: { label: string; lines: [string[], string[]] }
   contactSection: {
     label: string
@@ -280,7 +334,7 @@ export type Content = {
 const projectFacts = {
   idea: { href: "https://theideaiq.com", tags: ["Venture", "Next.js", "Supabase"] },
   droid: { tags: ["AI", "Gemini", "Telegram"] },
-  curator: { href: "https://github.com/theideaiq/theiraqicurator", tags: ["Next.js", "Supabase", "Turborepo"] },
+  curator: { href: "https://theiraqicurator.org", tags: ["Next.js", "Supabase", "Turborepo"] },
   sal: { href: "https://auibsal.org" },
   // Start year only: whether Merchania is current is still to be confirmed
   merchania: { date: "2019", tags: ["E-commerce"] },
@@ -299,6 +353,16 @@ export const en: Content = {
       title: "The Build · Prove · Grow Method — Shaheen K. Farjo",
       description:
         "How the consulting works at each stage: what we look at, what you get, how it's measured, and what's needed from you.",
+    },
+    "sample-diagnostic": {
+      title: "Sample only: Diagnostic report format — Shaheen K. Farjo",
+      description:
+        "Sample only. This is a made-up business with made-up numbers, showing the format of a Diagnostic report.",
+    },
+    notes: {
+      title: "Notes for owners — Shaheen K. Farjo",
+      description:
+        "Short, practical notes for small business owners: what one order earns before you pay for an ad, getting orders out of the chat, and keeping business money separate.",
     },
     workshops: {
       title: "Half-day Business Workshops for Owners and Teams in Iraq — Shaheen K. Farjo",
@@ -385,43 +449,286 @@ export const en: Content = {
     projects: [
       {
         ...projectFacts.idea,
-        date: "2022 — Now",
+        slug: "the-idea",
+        caseSlug: "the-idea",
+        date: "2018 — Now",
         title: "The IDEA",
         arabic: "ايديا",
         role: "Founder & CEO",
         description:
           "One Pass to buy, rent, bid and share games, music, books, films and gear in Iraq, from The IDEA and from shops, delivered to your door.",
+        detail: {
+          roleDates: "Founder & CEO, 2018 to now.",
+          context:
+            "Young Iraqis want the world's best games, music, books, films, and gear, without the hassle. Buying them often means uncertain prices, dates, and condition.",
+          constraints:
+            "Every seller has to keep the same promises, and shops shouldn't need their own payment and delivery setup. It has to work in Arabic first and on phones.",
+          did: "I shaped the business model and brand, and built the platform: the website, Store, Plus, Club, Pass, Partners for shops, Staff for the team, and Droid on Telegram.",
+          truth: "theideaiq.com is live. Plus is not open yet.",
+        },
       },
       {
         ...projectFacts.merchania,
+        slug: "merchania",
         title: "Merchania",
         role: "Cofounder & CEO",
         description:
           "An e-commerce startup that grew to about $2,000 in monthly revenue and 20,000 monthly visitors, working with more than 80 Instagram influencers and more than 50 manufacturers.",
+        detail: {
+          roleDates: "Cofounder & CEO, 2019.",
+          context: "An e-commerce startup that worked with product and accessory manufacturers around the world.",
+          did: "I signed partnerships with more than 50 product and accessory manufacturers, and brought more than 80 Instagram influencers into the project.",
+          truth: "It reached up to about $2,000 in monthly revenue and about 20,000 monthly visitors. It ran in 2019.",
+        },
       },
       {
         ...projectFacts.droid,
+        slug: "droid",
         date: "2022 — Now",
         title: "Droid",
         role: "Product & build",
         description:
           "A Telegram assistant powered by Google Gemini, part of The IDEA ecosystem. It meets people where they already are.",
+        detail: {
+          roleDates: "Product and build, 2022 to now.",
+          context: "The IDEA's Club lives on Telegram, so help should be there too.",
+          constraints:
+            "It speaks Iraqi Arabic first. It helps and never sells, and it stays out of checkout, payments, invoices, legal pages, and serious messages.",
+          did: "I built a Telegram bot for order updates, Bulbs, common questions, and help.",
+          truth: "It runs as @theideaiq_bot.",
+        },
       },
       {
         ...projectFacts.curator,
-        date: "2026 · In progress",
+        slug: "the-iraqi-curator",
+        date: "2026 — Now",
         title: "The Iraqi Curator",
-        role: "Product & build",
-        description: "Curating the best of Iraq in one place. Currently in development under The IDEA.",
+        role: "Technology partner",
+        description:
+          "A Baghdad-born, bilingual archive of Iraqi art, essays, workshops and exhibitions, built and hosted by The IDEA as its technology partner.",
+        detail: {
+          roleDates: "Technology partner through The IDEA, 2026 to now.",
+          context:
+            "\u201cThe art class we didn't take at school\u201d: a Baghdad-born, bilingual archive of Iraqi art, essays, workshops, and exhibitions.",
+          constraints: "Everything has to work in two languages.",
+          did: "Through The IDEA as technology partner, I built and host the public site and the Teachers' Lounge, its staff area.",
+          truth: "It's live at theiraqicurator.org, with a 3D museum room, audio guides, and calendar export.",
+        },
       },
       {
         ...projectFacts.sal,
+        slug: "sal",
+        caseSlug: "sal",
         date: "2026 — Now",
         title: "AUIB Society of Arts and Letters",
         role: "Founder & president",
         description:
           "A student society for the arts and letters at the American University of Iraq – Baghdad. I founded it and lead it as president.",
         tags: ["Student society", "AUIB"],
+        detail: {
+          roleDates: "Founder and president, 2026 to now.",
+          context: "A society to cultivate a culture of literature and creative expression across AUIB.",
+          constraints: "Student time, no money of its own, and it must outlast its founder.",
+          did: "I founded it, led its governance documents, and led the build of its platform at auibsal.org.",
+          truth:
+            "Its Constitution was ratified on October 13, 2026. It has six programs, a theater company, and a paper, Qirtas, launched on October 14, 2026.",
+        },
+      },
+    ],
+  },
+  projectLabels: {
+    roleDates: "Role and dates",
+    context: "Context",
+    constraints: "Constraints",
+    did: "What I did",
+    truth: "What's true so far",
+    visit: "Visit",
+    readCase: "Read the case study",
+    back: "All work",
+    backToProject: "Project summary",
+  },
+  cases: {
+    sal: {
+      title: "AUIB Society of Arts and Letters: from a handful of students to an *institution*",
+      intro: "SAL began as a handful of students who wanted the campus to read, write, and make things together.",
+      timeline: {
+        title: "The timeline",
+        columns: ["When", "What happened"],
+        rows: [
+          ["February 2026", "First brief, guidelines, and rubric for a campus literary journal"],
+          ["Spring 2026", "The Typewriter Tour takes a typewriter around campus, collecting six-word stories"],
+          ["September 2026", "Program proposals"],
+          ["October 13, 2026", "Charter Day: the Constitution is ratified"],
+          ["October 14, 2026", "Qirtas launches"],
+        ],
+      },
+      decisions: {
+        title: "The decisions that shaped it",
+        items: [
+          {
+            title: "No money",
+            body: "the Society holds no budget or account. Programs keep needs lists, and the Office of Student Life provides what it can.",
+          },
+          {
+            title: "One platform",
+            body: "the public site, members' area, and officers' administration are one app in English and Arabic.",
+          },
+          {
+            title: "Editorial independence",
+            body: "members' work is read blind, and I don't select work as Publisher.",
+          },
+          {
+            title: "Built to outlast me",
+            body: "every Council seat exists, procedures are written down, and I decide the handover before I leave for a semester abroad.",
+          },
+        ],
+      },
+      truth: {
+        title: "What's true so far",
+        body: "six programs, a theater company, and a paper. Edition 1's call closes December 3, 2026, and the first Qirtas Awards are planned for April 20, 2027.",
+      },
+      unproven: {
+        title: "What's still unproven",
+        body: "whether it runs well without me. My semester abroad will be the first real test.",
+      },
+    },
+    "the-idea": {
+      title: "The IDEA: one Pass, the same promises from *every seller*",
+      intro:
+        "The IDEA is built for young Iraqis who want games, music, books, films, and gear without the hassle. The hard part isn't listing products. It's making people trust the price, the date, and the condition.",
+      decisions: {
+        title: "The decisions that shaped it",
+        items: [
+          {
+            title: "Five promises",
+            body: "the price you see is the price you pay; we tell you when; the condition we describe, or your money back; leave any time; and a human answers.",
+          },
+          {
+            title: "Honest prices",
+            body: "a struck-through \u201cwas\u201d price appears only when that offer really sold at that price.",
+          },
+          { title: "Plain conditions", body: "four labels: New, Open box, Refurbished, and Used." },
+          {
+            title: "Shops in their own name",
+            body: "they sell under their own names, while The IDEA collects as their agent and pays out weekly.",
+          },
+          { title: "One Pass", body: "one identity across Store, Plus, Club, and Partners." },
+          {
+            title: "Arabic first",
+            body: "Iraqi Arabic on social and in the Club, starting with the brand line, اعلگها.",
+          },
+        ],
+      },
+      built: {
+        title: "What I built",
+        body: "the customer website, Partners for shops, Staff for the team, an API, and Droid on Telegram.",
+      },
+      truth: { title: "What's true so far", body: "theideaiq.com is live, and Plus is not open yet." },
+      unproven: { title: "What's still unproven", body: "whether customers and shops will choose it at scale." },
+    },
+  },
+  sample: {
+    banner: "Sample only. This is a made-up business with made-up numbers, showing the format of a Diagnostic report.",
+    title: "Diagnostic report (sample)",
+    summaryTitle: "Executive summary",
+    summary:
+      "Dijla Coffee, a made-up Baghdad seller, has loyal customers and steady Instagram demand. Its growth is held back by unclear margins and orders lost at the door. Fixing the first two priorities within 3 months could add about 200,000 IQD a month in gross profit.",
+    score: { key: "Overall health score", value: "2.25/5" },
+    next: { key: "Recommended next step", value: "Growth Sprint, or M7 and I1 on their own." },
+    tables: [
+      {
+        title: "Baseline",
+        columns: ["Item", "Today", "Source"],
+        rows: [
+          ["Orders per month", "180", "Order chats, 6-month average"],
+          ["Average order value", "28,000 IQD", "Sample of orders"],
+          ["Monthly revenue", "About 5,040,000 IQD", "Orders × average value"],
+          ["Gross margin per order", "9,000 IQD", "Supplier invoices (estimate)"],
+          ["Repeat purchase rate", "18%", "Customer list (estimate)"],
+          ["Refused deliveries", "9%", "Delivery receipts"],
+        ],
+      },
+      {
+        title: "Health scorecard",
+        columns: ["Area", "Score", "Evidence"],
+        rows: [
+          ["Strategy and direction", "3", "Clear customer, no written targets"],
+          ["Product and pricing", "2", "Two best sellers earn the lowest margin"],
+          ["Brand and marketing", "3", "Consistent content, no sales tracking"],
+          ["Sales and customer experience", "3", "Quick replies, no follow-up after purchase"],
+          ["Operations and supply", "2", "Stock is counted by hand, with frequent stock-outs"],
+          ["Finance and records", "1", "Business and personal money are mixed"],
+          ["Team and management", "2", "Everything depends on the owner"],
+          ["Legal and compliance (flag only)", "2", "Questions for a licensed professional"],
+        ],
+        footer: ["Average", "2.25", ""],
+      },
+      {
+        title: "Top priorities and quick wins",
+        columns: ["Priority", "Quick win", "Owner", "Cost", "Start", "Expected effect"],
+        rows: [
+          [
+            "Cut refused deliveries",
+            "Confirm each order on WhatsApp before dispatch",
+            "Sales staff",
+            "None",
+            "Week 1",
+            "From about 16 refused orders a month to 7: about 81,000 IQD",
+          ],
+          [
+            "Fix best-seller pricing",
+            "Raise two products by 2,000 IQD each, and watch demand",
+            "Owner",
+            "None",
+            "Week 2",
+            "About 120,000 IQD a month on 60 orders, if demand holds",
+          ],
+          ["Separate the money", "Open a separate cash book", "Owner", "None", "Week 1", "Monthly profit becomes visible"],
+        ],
+      },
+      {
+        title: "Roadmap",
+        columns: ["Horizon", "Focus", "Modules"],
+        rows: [
+          ["0–3 months", "Margins and records", "M7 Financial model and pricing, I1 Systems setup"],
+          ["3–6 months", "Reliable demand", "M4 Marketing strategy, I3 Social commerce setup"],
+          ["6–12 months", "Repeat customers", "M5 Sales and customer experience, I4 Campaign launch"],
+        ],
+      },
+    ],
+  },
+  notes: {
+    label: "Notes",
+    title: "Notes for *owners*",
+    intro: "The numbers in these notes are examples, not client data.",
+    items: [
+      {
+        id: "know-what-one-order-earns",
+        title: "Before you pay for an ad, know what one order earns",
+        paragraphs: [
+          "Many small sellers set an ad budget before they know their profit per order. Do it the other way around.",
+          "Say you sell something for 25,000 IQD. The product costs 15,000, and packaging and delivery cost 3,000. Each order leaves 7,000. A 350,000 IQD campaign then needs 50 extra orders just to break even.",
+          "Now ask whether that's realistic. If you normally sell 40 orders a month, 50 extra is a big claim for one campaign. You may need a better price, a higher order value, or a smaller test.",
+          "This takes five minutes, and it can save you a whole campaign budget.",
+        ],
+      },
+      {
+        id: "get-orders-out-of-the-chat",
+        title: "Get your orders out of the chat",
+        paragraphs: [
+          "If your orders live only in WhatsApp and Instagram chats, you can't easily answer simple questions: How many orders came last month? Which product sold most? Who hasn't paid?",
+          "You don't need software to start. Open one sheet with these columns: date, customer, phone, product, price, area, status, and notes.",
+          "Add every order, the same day. Within a month, you'll start to see your best sellers and the areas that refuse delivery most. That's your first real business data.",
+        ],
+      },
+      {
+        id: "business-money-isnt-your-pocket",
+        title: "Your business's money isn't your pocket",
+        paragraphs: [
+          "When you take cash from the till for lunch or pay a supplier from your own card, you lose the ability to know whether the business makes money.",
+          "You can fix most of this with three steps. Keep a separate place for business money. Write down every amount in and out. Pay yourself a set amount, on a set day, instead of taking cash when you need it.",
+          "It won't feel exciting. But at the end of the month, you'll have an honest answer to the most important question in your business: did we make a profit?",
+        ],
       },
     ],
   },
@@ -539,6 +846,7 @@ export const en: Content = {
         {
           name: "Diagnostic",
           inSentence: "the Diagnostic",
+          sample: "See a sample report",
           for: "Any owner who wants a clear picture before committing to more.",
           length: "2–3 weeks",
           receive: "A full review of your business, the problems ranked by impact, quick wins and a 12-month roadmap.",
@@ -791,7 +1099,10 @@ export const en: Content = {
         title: "Building The IDEA",
         body: "One Pass to buy, rent, bid and share games, music, books, films and gear in Iraq, from The IDEA and from shops, delivered to your door.",
       },
-      { title: "Developing The Iraqi Curator", body: "Curating the best of Iraq in one place, under The IDEA." },
+      {
+        title: "Developing The Iraqi Curator",
+        body: "A Baghdad-born, bilingual archive of Iraqi art, essays, workshops and exhibitions, built and hosted by The IDEA as its technology partner.",
+      },
       {
         title: "Consulting",
         body: "Working with a small number of businesses at a time. From January 24 to May 15, 2027: remote advice and Diagnostics only.",
@@ -890,7 +1201,7 @@ export const en: Content = {
     topicsLabel: "Topics",
     ask: "Ask about this workshop",
   },
-  footerLinks: { workshops: "Workshops", now: "Now", tools: "Tools", privacy: "Privacy" },
+  footerLinks: { workshops: "Workshops", notes: "Notes", now: "Now", tools: "Tools", privacy: "Privacy" },
   marquee: {
     label: "Toolkit & values",
     lines: [
@@ -927,6 +1238,15 @@ export const ar: Content = {
     method: {
       title: "منهجية نبني · نُثبت · ننمو — شاهين ك. فرجو",
       description: "كيف تسير الاستشارات في كل مرحلة: ما ننظر فيه، وما تحصل عليه، وكيف نقيس، وما المطلوب منك.",
+    },
+    "sample-diagnostic": {
+      title: "عينة فقط: شكل تقرير التشخيص — شاهين ك. فرجو",
+      description: "عينة فقط. هذا مشروع وهمي بأرقام وهمية، يوضح شكل تقرير التشخيص.",
+    },
+    notes: {
+      title: "ملاحظات لأصحاب المشاريع — شاهين ك. فرجو",
+      description:
+        "ملاحظات عملية قصيرة لأصحاب المشاريع الصغيرة: كم يربحك الطلب الواحد قبل أن تدفع على إعلان، وإخراج الطلبات من المحادثات، وفصل أموال المشروع.",
     },
     workshops: {
       title: "ورش عمل لأصحاب المشاريع وفرقهم في العراق — شاهين ك. فرجو",
@@ -1013,41 +1333,283 @@ export const ar: Content = {
     projects: [
       {
         ...projectFacts.idea,
-        date: "2022 — الآن",
+        slug: "the-idea",
+        caseSlug: "the-idea",
+        date: "2018 — الآن",
         title: "The IDEA",
         arabic: "ايديا",
         role: "المؤسس والرئيس التنفيذي",
         description: "پاس واحد لتشتري وتستأجر وتزايد وتشارك الألعاب والموسيقى والكتب والأفلام والأجهزة في العراق، من ايديا ومن المتاجر، مع التوصيل إلى بابك.",
+        detail: {
+          roleDates: "المؤسس والرئيس التنفيذي، منذ 2018 حتى الآن.",
+          context:
+            "يريد الشباب العراقيون أفضل ما في العالم من ألعاب وموسيقى وكتب وأفلام وأجهزة، من دون عناء. وشراؤها غالبًا يعني أسعارًا ومواعيد وحالة غير مؤكدة.",
+          constraints:
+            "على كل بائع أن يلتزم بالوعود نفسها، ولا ينبغي أن تحتاج المتاجر إلى نظام دفع وتوصيل خاص بها. ويجب أن تعمل بالعربية أولًا وعلى الهواتف.",
+          did: "صمّمت نموذج العمل والعلامة التجارية، وبنيت المنصة: الموقع، وStore، وPlus، وClub، وپاس، وPartners للمتاجر، وStaff للفريق، والدرويد على تيليغرام.",
+          truth: "theideaiq.com يعمل الآن. وPlus لم يُفتح بعد.",
+        },
       },
       {
         ...projectFacts.merchania,
+        slug: "merchania",
         title: "Merchania",
         role: "شريك مؤسس ورئيس تنفيذي",
         description:
           "شركة ناشئة في التجارة الإلكترونية نمت إلى نحو 2,000 دولار من الإيرادات و20,000 زائر شهريًا، بالتعاون مع أكثر من 80 مؤثرًا على إنستغرام وأكثر من 50 مصنّعًا.",
+        detail: {
+          roleDates: "شريك مؤسس ورئيس تنفيذي، 2019.",
+          context: "شركة ناشئة في التجارة الإلكترونية عملت مع مصنّعي منتجات وإكسسوارات حول العالم.",
+          did: "وقّعت شراكات مع أكثر من 50 مصنّعًا للمنتجات والإكسسوارات، وضممت أكثر من 80 مؤثرًا على إنستغرام إلى المشروع.",
+          truth: "بلغت إيراداتها الشهرية نحو 2,000 دولار في أعلى مستوياتها، ونحو 20,000 زائر شهريًا. وعملت خلال عام 2019.",
+        },
       },
       {
         ...projectFacts.droid,
+        slug: "droid",
         date: "2022 — الآن",
         title: "Droid",
         arabic: "الدرويد",
         role: "منتج وتطوير",
         description: "مساعد على تيليغرام يعمل بنموذج Gemini من Google، وهو جزء من منظومة ايديا. يصل إلى الناس في التطبيق الذي يستخدمونه أصلًا.",
+        detail: {
+          roleDates: "منتج وتطوير، منذ 2022 حتى الآن.",
+          context: "يعيش Club الخاص بايديا على تيليغرام، لذلك يجب أن تكون المساعدة هناك أيضًا.",
+          constraints:
+            "يتحدث بالعربية العراقية أولًا. يساعد ولا يبيع أبدًا، ويبتعد عن إتمام الشراء والمدفوعات والفواتير والصفحات القانونية والرسائل الجادة.",
+          did: "بنيت بوتًا على تيليغرام لتحديثات الطلبات وBulbs والأسئلة الشائعة والمساعدة.",
+          truth: "يعمل باسم @theideaiq_bot.",
+        },
       },
       {
         ...projectFacts.curator,
-        date: "2026 · قيد التطوير",
+        slug: "the-iraqi-curator",
+        date: "2026 — الآن",
         title: "The Iraqi Curator",
-        role: "منتج وتطوير",
-        description: "يجمع أفضل ما في العراق في مكان واحد. قيد التطوير ضمن ايديا.",
+        role: "شريك تقني",
+        description:
+          "أرشيف ثنائي اللغة وُلد في بغداد للفن العراقي والمقالات والورش والمعارض، تبنيه ايديا وتستضيفه بصفتها شريكه التقني.",
+        detail: {
+          roleDates: "شريك تقني من خلال ايديا، منذ 2026 حتى الآن.",
+          context: "«حصة الفن التي لم نأخذها في المدرسة»: أرشيف ثنائي اللغة وُلد في بغداد للفن العراقي والمقالات والورش والمعارض.",
+          constraints: "يجب أن يعمل كل شيء بلغتين.",
+          did: "من خلال ايديا بصفتها الشريك التقني، بنيت الموقع العام وTeachers' Lounge، مساحة الفريق فيه، وأستضيفهما.",
+          truth: "يعمل الآن على theiraqicurator.org، مع غرفة متحف ثلاثية الأبعاد، وأدلة صوتية، وتصدير إلى التقويم.",
+        },
       },
       {
         ...projectFacts.sal,
+        slug: "sal",
+        caseSlug: "sal",
         date: "2026 — الآن",
         title: "جمعية الفنون والآداب",
         role: "المؤسس والرئيس",
         description: "جمعية طلابية للفنون والآداب في الجامعة الأمريكية في العراق – بغداد. أسّستها وأرأسها.",
         tags: ["جمعية طلابية", "AUIB"],
+        detail: {
+          roleDates: "المؤسس والرئيس، منذ 2026 حتى الآن.",
+          context: "جمعية لتنمية ثقافة الأدب والتعبير الإبداعي في أرجاء الجامعة الأمريكية في العراق – بغداد.",
+          constraints: "وقت الطلاب محدود، ولا تملك أموالًا خاصة بها، ويجب أن تستمر بعد مؤسسها.",
+          did: "أسّستها، وقدت إعداد وثائق حوكمتها، وقدت بناء منصتها على auibsal.org.",
+          truth:
+            "صُدّق دستورها في 13 تشرين الأول 2026. ولديها ستة برامج، وفرقة مسرحية، وصحيفة اسمها «قرطاس» انطلقت في 14 تشرين الأول 2026.",
+        },
+      },
+    ],
+  },
+  projectLabels: {
+    roleDates: "الدور والتاريخ",
+    context: "السياق",
+    constraints: "القيود",
+    did: "ما قمت به",
+    truth: "ما تحقق حتى الآن",
+    visit: "زيارة",
+    readCase: "اقرأ دراسة الحالة",
+    back: "كل الأعمال",
+    backToProject: "ملخص المشروع",
+  },
+  cases: {
+    sal: {
+      title: "جمعية الفنون والآداب: من حفنة طلاب إلى *مؤسسة*",
+      intro: "بدأت الجمعية بحفنة من الطلاب أرادوا أن يقرأ الحرم الجامعي ويكتب ويصنع الأشياء معًا.",
+      timeline: {
+        title: "المسار الزمني",
+        columns: ["متى", "ما حدث"],
+        rows: [
+          ["شباط 2026", "أول موجز وإرشادات ومعايير تقييم لمجلة أدبية جامعية"],
+          ["ربيع 2026", "جولة الآلة الكاتبة تحمل آلة كاتبة في أرجاء الحرم الجامعي لجمع قصص من ست كلمات"],
+          ["أيلول 2026", "مقترحات البرامج"],
+          ["13 تشرين الأول 2026", "يوم الميثاق: التصديق على الدستور"],
+          ["14 تشرين الأول 2026", "انطلاق قرطاس"],
+        ],
+      },
+      decisions: {
+        title: "القرارات التي شكّلتها",
+        items: [
+          {
+            title: "لا أموال",
+            body: "لا تملك الجمعية ميزانية ولا حسابًا. تحتفظ البرامج بقوائم احتياجات، ويوفّر مكتب الحياة الطلابية ما يستطيع.",
+          },
+          {
+            title: "منصة واحدة",
+            body: "الموقع العام ومساحة الأعضاء وإدارة المسؤولين تطبيق واحد بالإنكليزية والعربية.",
+          },
+          {
+            title: "استقلال تحريري",
+            body: "تُقرأ أعمال الأعضاء من دون معرفة أصحابها، ولا أختار الأعمال بصفتي ناشرًا.",
+          },
+          {
+            title: "مبنية لتستمر بعدي",
+            body: "كل مقعد في المجلس موجود، والإجراءات مكتوبة، وأحدد خطة التسليم قبل أن أغادر لفصل دراسي في الخارج.",
+          },
+        ],
+      },
+      truth: {
+        title: "ما تحقق حتى الآن",
+        body: "ستة برامج، وفرقة مسرحية، وصحيفة. تُغلق دعوة العدد الأول في 3 كانون الأول 2026، ومن المقرر تنظيم أولى جوائز قرطاس في 20 نيسان 2027.",
+      },
+      unproven: {
+        title: "ما لم يثبت بعد",
+        body: "هل تعمل جيدًا من دوني. سيكون فصلي الدراسي في الخارج أول اختبار حقيقي.",
+      },
+    },
+    "the-idea": {
+      title: "ايديا: پاس واحد، والوعود نفسها من *كل بائع*",
+      intro:
+        "بُنيت ايديا للشباب العراقيين الذين يريدون الألعاب والموسيقى والكتب والأفلام والأجهزة من دون عناء. الجزء الصعب ليس عرض المنتجات، بل أن يثق الناس بالسعر والموعد والحالة.",
+      decisions: {
+        title: "القرارات التي شكّلتها",
+        items: [
+          {
+            title: "خمسة وعود",
+            body: "السعر الذي تراه هو السعر الذي تدفعه؛ ونخبرك متى؛ والحالة التي نصفها أو تسترد أموالك؛ ويمكنك المغادرة متى شئت؛ ويرد عليك إنسان.",
+          },
+          {
+            title: "أسعار صادقة",
+            body: "لا يظهر سعر «قبل» مشطوب إلا إذا بيع ذلك العرض فعلًا بذلك السعر.",
+          },
+          { title: "حالات واضحة", body: "أربع تسميات: جديد، ومفتوح العلبة، ومجدَّد، ومستعمل." },
+          {
+            title: "المتاجر بأسمائها",
+            body: "تبيع المتاجر بأسمائها، بينما تحصّل ايديا المبالغ بصفتها وكيلًا عنها وتدفع لها أسبوعيًا.",
+          },
+          { title: "پاس واحد", body: "هوية واحدة عبر Store وPlus وClub وPartners." },
+          {
+            title: "العربية أولًا",
+            body: "العربية العراقية على وسائل التواصل وفي Club، بدءًا من شعار العلامة: اعلگها.",
+          },
+        ],
+      },
+      built: {
+        title: "ما بنيته",
+        body: "موقع الزبائن، وPartners للمتاجر، وStaff للفريق، وواجهة برمجة تطبيقات (API)، والدرويد على تيليغرام.",
+      },
+      truth: { title: "ما تحقق حتى الآن", body: "theideaiq.com يعمل الآن، وPlus لم يُفتح بعد." },
+      unproven: { title: "ما لم يثبت بعد", body: "هل سيختارها الزبائن والمتاجر على نطاق واسع." },
+    },
+  },
+  sample: {
+    banner: "عينة فقط. هذا مشروع وهمي بأرقام وهمية، يوضح شكل تقرير التشخيص.",
+    title: "تقرير التشخيص (عينة)",
+    summaryTitle: "الملخص التنفيذي",
+    summary:
+      "دجلة كوفي، بائع وهمي في بغداد، لديه زبائن أوفياء وطلب ثابت عبر إنستغرام. لكن نموه يتعطل بسبب هوامش غير واضحة وطلبات تضيع عند الباب. وقد يضيف إصلاح أول أولويتين خلال 3 أشهر نحو 200,000 دينار شهريًا إلى إجمالي الربح.",
+    score: { key: "نتيجة الصحة الإجمالية", value: "2.25/5" },
+    next: { key: "الخطوة التالية الموصى بها", value: "باقة النمو، أو M7 وI1 وحدهما." },
+    tables: [
+      {
+        title: "نقطة البداية",
+        columns: ["البند", "اليوم", "المصدر"],
+        rows: [
+          ["الطلبات شهريًا", "180", "محادثات الطلبات، متوسط 6 أشهر"],
+          ["متوسط قيمة الطلب", "28,000 دينار", "عينة من الطلبات"],
+          ["الإيرادات الشهرية", "نحو 5,040,000 دينار", "الطلبات × متوسط القيمة"],
+          ["إجمالي هامش الطلب", "9,000 دينار", "فواتير الموردين (تقدير)"],
+          ["نسبة الشراء المتكرر", "18%", "قائمة الزبائن (تقدير)"],
+          ["التوصيلات المرفوضة", "9%", "إيصالات التوصيل"],
+        ],
+      },
+      {
+        title: "بطاقة التقييم",
+        columns: ["المجال", "الدرجة", "الدليل"],
+        rows: [
+          ["الاستراتيجية والتوجه", "3", "زبون واضح، ولا أهداف مكتوبة"],
+          ["المنتج والتسعير", "2", "المنتجان الأكثر مبيعًا يحققان أقل هامش"],
+          ["العلامة والتسويق", "3", "محتوى منتظم، ولا تتبّع للمبيعات"],
+          ["المبيعات وتجربة الزبون", "3", "ردود سريعة، ولا متابعة بعد الشراء"],
+          ["العمليات والتوريد", "2", "يُعدّ المخزون يدويًا، مع نفاد متكرر"],
+          ["المالية والسجلات", "1", "أموال المشروع مختلطة بالأموال الشخصية"],
+          ["الفريق والإدارة", "2", "كل شيء يعتمد على صاحب المشروع"],
+          ["القانون والامتثال (تنبيه فقط)", "2", "أسئلة لمختص مرخّص"],
+        ],
+        footer: ["المتوسط", "2.25", ""],
+      },
+      {
+        title: "أهم الأولويات والمكاسب السريعة",
+        columns: ["الأولوية", "المكسب السريع", "المسؤول", "الكلفة", "البدء", "الأثر المتوقع"],
+        rows: [
+          [
+            "تقليل التوصيلات المرفوضة",
+            "تأكيد كل طلب على واتساب قبل إرساله",
+            "فريق المبيعات",
+            "لا شيء",
+            "الأسبوع 1",
+            "من نحو 16 طلبًا مرفوضًا شهريًا إلى 7: نحو 81,000 دينار",
+          ],
+          [
+            "تصحيح تسعير الأكثر مبيعًا",
+            "رفع سعر منتجين بـ 2,000 دينار لكل منهما، ومراقبة الطلب",
+            "صاحب المشروع",
+            "لا شيء",
+            "الأسبوع 2",
+            "نحو 120,000 دينار شهريًا على 60 طلبًا، إذا بقي الطلب كما هو",
+          ],
+          ["فصل الأموال", "فتح دفتر نقد منفصل", "صاحب المشروع", "لا شيء", "الأسبوع 1", "يصبح الربح الشهري واضحًا"],
+        ],
+      },
+      {
+        title: "خارطة الطريق",
+        columns: ["المدى", "التركيز", "الوحدات"],
+        rows: [
+          ["0–3 أشهر", "الهوامش والسجلات", "M7 النموذج المالي والتسعير، I1 تجهيز الأنظمة"],
+          ["3–6 أشهر", "طلب موثوق", "M4 استراتيجية التسويق، I3 تجهيز التجارة عبر وسائل التواصل"],
+          ["6–12 شهرًا", "زبائن متكررون", "M5 المبيعات وتجربة الزبون، I4 إطلاق حملة"],
+        ],
+      },
+    ],
+  },
+  notes: {
+    label: "ملاحظات",
+    title: "ملاحظات *لأصحاب المشاريع*",
+    intro: "الأرقام في هذه الملاحظات أمثلة، وليست بيانات عملاء.",
+    items: [
+      {
+        id: "know-what-one-order-earns",
+        title: "قبل أن تدفع على إعلان، اعرف كم يربحك الطلب الواحد",
+        paragraphs: [
+          "يحدد كثير من أصحاب المشاريع الصغيرة ميزانية الإعلان قبل أن يعرفوا ربح الطلب الواحد. افعلها بالعكس.",
+          "لنفترض أنك تبيع منتجًا بـ 25,000 دينار. كلفة المنتج 15,000، وكلفة التغليف والتوصيل 3,000. يبقى لك من كل طلب 7,000. عندها تحتاج حملة بـ 350,000 دينار إلى 50 طلبًا إضافيًا لتغطي كلفتها فقط.",
+          "اسأل نفسك الآن: هل هذا واقعي؟ إذا كنت تبيع عادةً 40 طلبًا في الشهر، فخمسون طلبًا إضافيًا رقم كبير على حملة واحدة. قد تحتاج إلى سعر أفضل، أو قيمة طلب أعلى، أو تجربة أصغر.",
+          "هذه الحسبة تأخذ خمس دقائق، وقد توفر عليك ميزانية حملة كاملة.",
+        ],
+      },
+      {
+        id: "get-orders-out-of-the-chat",
+        title: "أخرج طلباتك من المحادثات",
+        paragraphs: [
+          "إذا كانت طلباتك موجودة فقط في محادثات واتساب وإنستغرام، فلن تجيب بسهولة عن أسئلة بسيطة: كم طلبًا وصل الشهر الماضي؟ أي منتج بيع أكثر؟ من لم يدفع بعد؟",
+          "لا تحتاج إلى برنامج لتبدأ. افتح جدولًا واحدًا بهذه الأعمدة: التاريخ، والزبون، والهاتف، والمنتج، والسعر، والمنطقة، والحالة، والملاحظات.",
+          "أضف كل طلب في اليوم نفسه. وخلال شهر ستبدأ برؤية أكثر منتجاتك مبيعًا والمناطق التي ترفض التوصيل أكثر من غيرها. هذه أول بيانات حقيقية عن عملك.",
+        ],
+      },
+      {
+        id: "business-money-isnt-your-pocket",
+        title: "أموال مشروعك ليست جيبك",
+        paragraphs: [
+          "عندما تأخذ من صندوق المشروع ثمن الغداء، أو تدفع لمورّد من بطاقتك الشخصية، تفقد القدرة على معرفة هل يربح مشروعك فعلًا.",
+          "يمكنك إصلاح معظم ذلك بثلاث خطوات: خصص مكانًا منفصلًا لأموال المشروع، واكتب كل مبلغ يدخل ويخرج، وادفع لنفسك مبلغًا محددًا في يوم محدد بدلًا من الأخذ كلما احتجت.",
+          "لن يبدو الأمر مثيرًا، لكنك ستحصل في نهاية الشهر على جواب صادق عن أهم سؤال في مشروعك: هل ربحنا؟",
+        ],
       },
     ],
   },
@@ -1164,6 +1726,7 @@ export const ar: Content = {
         {
           name: "التشخيص",
           inSentence: "التشخيص",
+          sample: "شاهد عينة من التقرير",
           for: "لأي صاحب مشروع يريد صورة واضحة قبل أن يلتزم بالمزيد.",
           length: "2–3 أسابيع",
           receive: "مراجعة شاملة لعملك، وترتيب المشكلات حسب أثرها، ومكاسب سريعة، وخارطة طريق لمدة 12 شهرًا.",
@@ -1377,7 +1940,10 @@ export const ar: Content = {
         title: "أبني ايديا",
         body: "پاس واحد لتشتري وتستأجر وتزايد وتشارك الألعاب والموسيقى والكتب والأفلام والأجهزة في العراق، من ايديا ومن المتاجر، مع التوصيل إلى بابك.",
       },
-      { title: "أطوّر The Iraqi Curator", body: "يجمع أفضل ما في العراق في مكان واحد، ضمن ايديا." },
+      {
+        title: "أطوّر The Iraqi Curator",
+        body: "أرشيف ثنائي اللغة وُلد في بغداد للفن العراقي والمقالات والورش والمعارض، تبنيه ايديا وتستضيفه بصفتها شريكه التقني.",
+      },
       {
         title: "الاستشارات",
         body: "أعمل مع عدد محدود من المشاريع في الوقت نفسه. من 24 كانون الثاني إلى 15 أيار 2027: استشارات وتشخيص عن بُعد فقط.",
@@ -1476,7 +2042,7 @@ export const ar: Content = {
     topicsLabel: "المواضيع",
     ask: "استفسر عن هذه الورشة",
   },
-  footerLinks: { workshops: "ورش العمل", now: "الآن", tools: "الأدوات", privacy: "الخصوصية" },
+  footerLinks: { workshops: "ورش العمل", notes: "ملاحظات", now: "الآن", tools: "الأدوات", privacy: "الخصوصية" },
   marquee: {
     label: "الأدوات والقيم",
     lines: [
@@ -1500,6 +2066,28 @@ export const ar: Content = {
 }
 
 export const content: Record<Lang, Content> = { en, ar }
+
+export const projectSlugs: ProjectSlug[] = ["the-idea", "merchania", "droid", "the-iraqi-curator", "sal"]
+export const caseSlugs: CaseSlug[] = ["the-idea", "sal"]
+
+export function findProject(t: Content, slug: ProjectSlug) {
+  const project = t.work.projects.find((item) => item.slug === slug)
+  if (!project) throw new Error(`Unknown project: ${slug}`)
+  return project
+}
+
+// Title and description for any page, including project and case pages
+export function metaFor(t: Content, page: Page): { title: string; description: string } {
+  if (page.startsWith("work/")) {
+    const project = findProject(t, page.slice(5) as ProjectSlug)
+    return { title: `${project.title} — ${t.name}`, description: project.description }
+  }
+  if (page.startsWith("cases/")) {
+    const study = t.cases[page.slice(6) as CaseSlug]
+    return { title: `${study.title.replace(/\*/g, "")} — ${t.name}`, description: study.intro }
+  }
+  return t.meta[page as KnownPage]
+}
 
 export function workshopGreeting(t: Content, topic: string) {
   return t.whatsapp.workshop.replace("{workshop}", topic)

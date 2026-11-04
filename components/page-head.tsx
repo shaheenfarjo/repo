@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { contact, content, en, pagePath, siteUrl, socials, type Lang, type Page } from "@/lib/content"
+import { caseSlugs, contact, content, en, findProject, metaFor, pagePath, siteUrl, socials, type CaseSlug, type Lang, type Page, type ProjectSlug } from "@/lib/content"
 
 const personId = `${siteUrl}/#person`
 const serviceId = `${siteUrl}/#consulting`
@@ -72,6 +72,65 @@ function jsonLd(lang: Lang, page: Page) {
       },
     })
   }
+  // C5: a project page is about the project, as a creative work by the person
+  if (page.startsWith("work/")) {
+    const project = findProject(t, page.slice(5) as ProjectSlug)
+    graph.push({
+      "@type": "WebPage",
+      name: metaFor(t, page).title,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      about: {
+        "@type": "CreativeWork",
+        name: project.title,
+        description: project.description,
+        creator: { "@id": personId },
+        ...(project.href ? { url: project.href } : {}),
+      },
+    })
+  }
+  // A11: case studies as articles by the person
+  if (page.startsWith("cases/") && caseSlugs.includes(page.slice(6) as CaseSlug)) {
+    const study = t.cases[page.slice(6) as CaseSlug]
+    graph.push({
+      "@type": "Article",
+      headline: study.title.replace(/\*/g, ""),
+      description: study.intro,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      author: { "@id": personId },
+    })
+  }
+  // A10: the notes as a blog with three posts (no dates were supplied, so none are given)
+  if (page === "notes") {
+    graph.push({
+      "@type": "Blog",
+      name: t.meta.notes.title,
+      description: t.meta.notes.description,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      author: { "@id": personId },
+      blogPost: t.notes.items.map((note) => ({
+        "@type": "BlogPosting",
+        headline: note.title,
+        url: `${siteUrl}${pagePath(lang, page)}#${note.id}`,
+        inLanguage: lang,
+        author: { "@id": personId },
+      })),
+    })
+  }
+  // A9: the sample is labeled as a sample in its structured data too
+  if (page === "sample-diagnostic") {
+    graph.push({
+      "@type": "WebPage",
+      name: t.meta[page].title,
+      description: t.meta[page].description,
+      url: `${siteUrl}${pagePath(lang, page)}`,
+      inLanguage: lang,
+      author: { "@id": personId },
+      about: { "@id": serviceId },
+    })
+  }
   if (page === "method" || page === "tools" || page === "now" || page === "privacy") {
     graph.push({
       "@type": "WebPage",
@@ -94,7 +153,7 @@ function ogImage(lang: Lang, page: Page) {
 export function PageHead({ lang, page }: { lang: Lang; page: Page }) {
   const t = content[lang]
   const other = content[t.header.switchLang]
-  const meta = t.meta[page]
+  const meta = metaFor(t, page)
   const url = `${siteUrl}${pagePath(lang, page)}`
   const image = ogImage(lang, page)
   return (

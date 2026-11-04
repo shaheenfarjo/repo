@@ -12,7 +12,7 @@ export function SiteFooter({ t }: { t: Content }) {
           <span className="t-num" dir="ltr">GMT+3</span>
         </p>
         <ul className="flex flex-wrap justify-center gap-x-6">
-          {(["workshops", "now", "tools", "privacy"] as const).map((page) => (
+          {(["workshops", "notes", "now", "tools", "privacy"] as const).map((page) => (
             <li key={page}>
               <a href={pagePath(t.lang, page)} className="t-label inline-flex min-h-11 items-center text-faint hover:text-ink">
                 {t.footerLinks[page]}

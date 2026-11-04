@@ -1,4 +1,4 @@
-import { content, type Lang, type Page } from "@/lib/content"
+import { content, type CaseSlug, type Lang, type Page, type ProjectSlug } from "@/lib/content"
 import { Chooser, ConsultingIntro, Faq, Method, Packages, Process, Services } from "./consulting"
 import { EnhancementsScript } from "./enhancements-script"
 import { Hero } from "./hero"
@@ -9,9 +9,10 @@ import { SiteHeader } from "./site-header"
 import { NowBody, PrivacyBody } from "./simple-pages"
 import { WorkshopsBody } from "./workshops"
 import { MethodBody } from "./method"
+import { CaseBody, NotesBody, ProjectBody, SampleBody } from "./project-pages"
 import { BreakEven, HealthCheck, ToolsIntro } from "./tools"
 import { ToolsScript } from "./tools-script"
-import { contact, pagePath } from "@/lib/content"
+import { contact, packageGreeting, pagePath } from "@/lib/content"
 
 // Shared shell for both pages, in both languages
 function PageShell({ lang, page, fontClassName, children }: { lang: Lang; page: Page; fontClassName: string; children: React.ReactNode }) {
@@ -123,4 +124,53 @@ export function MethodPage({ lang, fontClassName }: { lang: Lang; fontClassName:
       <Contact t={t} greeting={t.whatsapp.consulting} source={pagePath(lang, "method")} />
     </PageShell>
   )
+}
+
+// C5
+export function ProjectPage({ lang, slug, fontClassName }: { lang: Lang; slug: ProjectSlug; fontClassName: string }) {
+  const t = content[lang]
+  return (
+    <PageShell lang={lang} page={`work/${slug}`} fontClassName={fontClassName}>
+      <ProjectBody t={t} slug={slug} />
+      <Contact t={t} greeting={t.whatsapp.home} source={pagePath(lang, `work/${slug}`)} />
+    </PageShell>
+  )
+}
+
+// A11
+export function CasePage({ lang, slug, fontClassName }: { lang: Lang; slug: CaseSlug; fontClassName: string }) {
+  const t = content[lang]
+  return (
+    <PageShell lang={lang} page={`cases/${slug}`} fontClassName={fontClassName}>
+      <CaseBody t={t} slug={slug} />
+      <Contact t={t} greeting={t.whatsapp.home} source={pagePath(lang, `cases/${slug}`)} />
+    </PageShell>
+  )
+}
+
+// A9
+export function SamplePage({ lang, fontClassName }: { lang: Lang; fontClassName: string }) {
+  const t = content[lang]
+  return (
+    <PageShell lang={lang} page="sample-diagnostic" fontClassName={fontClassName}>
+      <SampleBody t={t} />
+      <Contact t={t} greeting={packageGreetingFor(t)} source={pagePath(lang, "sample-diagnostic")} />
+    </PageShell>
+  )
+}
+
+// A10
+export function NotesPage({ lang, fontClassName }: { lang: Lang; fontClassName: string }) {
+  const t = content[lang]
+  return (
+    <PageShell lang={lang} page="notes" fontClassName={fontClassName}>
+      <NotesBody t={t} />
+      <Contact t={t} greeting={t.whatsapp.home} source={pagePath(lang, "notes")} />
+    </PageShell>
+  )
+}
+
+// The sample report's contact asks about the Diagnostic it illustrates
+function packageGreetingFor(t: (typeof content)[Lang]) {
+  return packageGreeting(t, t.consulting.packages.items[0])
 }

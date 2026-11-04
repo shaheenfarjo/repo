@@ -200,6 +200,12 @@
     letter-spacing: 0.04em;
   }
 
+  /* Letter spacing breaks Arabic letter joining, so Arabic words in number
+     styles (like «الآن» in a date) get none */
+  .t-num:lang(ar) {
+    letter-spacing: 0;
+  }
+
   .t-name:lang(ar) {
     font-family: var(--font-sans), "IBM Plex Sans", Arial, Tahoma, sans-serif;
     font-size: clamp(60px, 8.5vw, 128px);
@@ -415,5 +421,16 @@
 
   .nav\:sticky {
     position: static;
+  }
+}
+
+/* A10: each note starts on its own printed page, without the note list */
+@media print {
+  .note + .note {
+    break-before: page;
+  }
+
+  nav[aria-label] {
+    display: none;
   }
 }

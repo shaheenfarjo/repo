@@ -98,4 +98,130 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/privacy"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/privacy"/>
   </url>
+  <url>
+    <loc>https://shaheenfarjo.com/notes</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/notes"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/notes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/notes"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/notes</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/notes"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/notes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/notes"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/sample-diagnostic</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/sample-diagnostic"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/sample-diagnostic</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/sample-diagnostic"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/sample-diagnostic"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/work/the-idea</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/the-idea"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/work/the-idea</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/the-idea"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/work/merchania</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/merchania"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/merchania"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/merchania"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/work/merchania</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/merchania"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/merchania"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/merchania"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/work/droid</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/droid"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/droid"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/droid"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/work/droid</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/droid"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/droid"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/droid"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/work/the-iraqi-curator</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/the-iraqi-curator"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/the-iraqi-curator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/the-iraqi-curator"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/work/the-iraqi-curator</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/the-iraqi-curator"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/the-iraqi-curator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/the-iraqi-curator"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/work/sal</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/sal"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/sal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/sal"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/work/sal</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/work/sal"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/work/sal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/work/sal"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/cases/the-idea</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/cases/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/cases/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/cases/the-idea"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/cases/the-idea</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/cases/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/cases/the-idea"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/cases/the-idea"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/cases/sal</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/cases/sal"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/cases/sal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/cases/sal"/>
+  </url>
+  <url>
+    <loc>https://shaheenfarjo.com/ar/cases/sal</loc>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shaheenfarjo.com/cases/sal"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://shaheenfarjo.com/ar/cases/sal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shaheenfarjo.com/cases/sal"/>
+  </url>
 </urlset>

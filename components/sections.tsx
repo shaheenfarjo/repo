@@ -1,4 +1,4 @@
-import { contact, packageGreeting, pagePath, whatsappUrl, type Content } from "@/lib/content"
+import { contact, packageGreeting, pagePath, whatsappUrl, type Content, type Project } from "@/lib/content"
 import { Rich } from "@/lib/rich"
 import { ArrowUpRight, BookingLink, RemoteNotice, SectionHeading, SectionLabel, container, external } from "./ui"
 
@@ -55,50 +55,61 @@ export function Work({ t }: { t: Content }) {
     <Section id="work" labelledBy="work-title">
       <SectionHeading index="02" label={s.label} title={s.title} id="work-title" />
       <ul className="border-b border-hairline">
-        {s.projects.map((project) => {
-          const title = (
-            <>
-              <span lang={/[\u0600-\u06FF]/.test(project.title) ? "ar" : "en"} className="t-work">
-                {project.title}
-              </span>
-              {project.arabic && (
-                <span lang="ar" className="t-h3 font-body text-faint">
-                  {project.arabic}
-                </span>
-              )}
-              {project.href && <ArrowUpRight className="size-6 self-center text-muted transition-transform group-hover:-translate-y-1" />}
-            </>
-          )
-          return (
-            <li key={project.title} className="group grid gap-4 border-t border-hairline py-10 md:grid-cols-12 md:items-baseline md:gap-8 md:py-14">
-              <p className="t-num t-label text-faint md:col-span-2">{project.date}</p>
-              <div className="md:col-span-5">
-                <h3 className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                  {project.href ? (
-                    <a href={project.href} {...external} className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                      {title}
-                    </a>
-                  ) : (
-                    title
-                  )}
-                </h3>
-                <p className="t-label mt-3 text-muted">{project.role}</p>
-              </div>
-              <div className="md:col-span-5">
-                <p className="t-body">{project.description}</p>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <li key={tag} className="t-chip rounded-pill border border-hairline px-3 py-1 text-muted">
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          )
-        })}
+        {s.projects.map((project) => (
+          <li key={project.title} className="group grid gap-4 border-t border-hairline py-10 md:grid-cols-12 md:items-baseline md:gap-8 md:py-14">
+            <p className="t-num t-label text-faint md:col-span-2">{project.date}</p>
+            <div className="md:col-span-5">
+              {/* C5: each title opens its project page */}
+              <h3>
+                <a href={pagePath(t.lang, `work/${project.slug}`)} className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <ProjectTitle project={project} />
+                  <ArrowUpRight className="size-6 self-center rotate-45 text-muted transition-transform group-hover:translate-x-1 rtl:-rotate-45 rtl:group-hover:-translate-x-1" />
+                </a>
+              </h3>
+              <p className="t-label mt-3 text-muted">{project.role}</p>
+            </div>
+            <div className="md:col-span-5">
+              <p className="t-body">{project.description}</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <li key={tag} className="t-chip rounded-pill border border-hairline px-3 py-1 text-muted">
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+              {project.href && <ExternalSite href={project.href} label={t.projectLabels.visit} />}
+            </div>
+          </li>
+        ))}
       </ul>
     </Section>
+  )
+}
+
+// A project's name, with its Arabic name beside it when it has one
+export function ProjectTitle({ project, className = "t-work" }: { project: Project; className?: string }) {
+  return (
+    <>
+      <span lang={/[\u0600-\u06FF]/.test(project.title) ? "ar" : "en"} className={className}>
+        {project.title}
+      </span>
+      {project.arabic && (
+        <span lang="ar" className="t-h3 font-body text-faint">
+          {project.arabic}
+        </span>
+      )}
+    </>
+  )
+}
+
+// A link out to a project's own site, shown by its address
+export function ExternalSite({ href, label }: { href: string; label: string }) {
+  return (
+    <a href={href} {...external} className="t-label mt-4 inline-flex min-h-11 items-center gap-2 text-ink underline underline-offset-4">
+      <span className="sr-only">{label}: </span>
+      <span dir="ltr">{href.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
+      <ArrowUpRight className="size-4" />
+    </a>
   )
 }
 

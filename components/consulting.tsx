@@ -142,6 +142,11 @@ export function Packages({ t }: { t: Content }) {
                     </div>
                   </div>
                   {item.priceNote && <p className="t-body mt-3 text-ink">{item.priceNote}</p>}
+                  {item.sample && (
+                    <a href={pagePath(t.lang, "sample-diagnostic")} className="t-label mt-3 inline-flex min-h-11 items-center text-ink underline underline-offset-4">
+                      {item.sample}
+                    </a>
+                  )}
                   <dl className="mt-6 grid gap-6 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,3fr)]">
                     {(
                       [
