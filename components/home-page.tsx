@@ -7,6 +7,7 @@ import { About, ConsultingSummary, Contact, Marquee, WhatIDo, Work } from "./sec
 import { SiteFooter } from "./site-footer"
 import { SiteHeader } from "./site-header"
 import { NowBody, PrivacyBody } from "./simple-pages"
+import { WorkshopsBody } from "./workshops"
 import { BreakEven, HealthCheck, ToolsIntro } from "./tools"
 import { ToolsScript } from "./tools-script"
 import { contact, pagePath } from "@/lib/content"
@@ -97,6 +98,17 @@ export function PrivacyPage({ lang, fontClassName }: { lang: Lang; fontClassName
     <PageShell lang={lang} page="privacy" fontClassName={fontClassName}>
       <PrivacyBody t={t} />
       <Contact t={t} greeting={t.whatsapp.home} source={pagePath(lang, "privacy")} />
+    </PageShell>
+  )
+}
+
+// A17
+export function WorkshopsPage({ lang, fontClassName }: { lang: Lang; fontClassName: string }) {
+  const t = content[lang]
+  return (
+    <PageShell lang={lang} page="workshops" fontClassName={fontClassName}>
+      <WorkshopsBody t={t} />
+      <Contact t={t} greeting={t.whatsapp.home} source={pagePath(lang, "workshops")} />
     </PageShell>
   )
 }
