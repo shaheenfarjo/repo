@@ -36,7 +36,7 @@ export function SiteFooter({ t }: { t: Content }) {
           ))}
         </ul>
         <p className="t-label text-faint">
-          © <span className="t-num">2023 — {new Date().getFullYear()}</span> {t.footer.owner}
+          © <span className="t-num">2003 — {new Date().getFullYear()}</span> {t.footer.owner}
         </p>
       </div>
     </footer>
