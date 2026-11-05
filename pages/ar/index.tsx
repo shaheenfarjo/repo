@@ -1,4 +1,4 @@
-import { HomePage } from "@/components/home-page"
+import { HomePage } from "@/components/pages"
 import { plexMono } from "@/lib/fonts/mono"
 import { plexSansPreload } from "@/lib/fonts/sans-preload"
 

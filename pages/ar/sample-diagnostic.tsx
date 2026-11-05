@@ -1,4 +1,4 @@
-import { SamplePage } from "@/components/home-page"
+import { SamplePage } from "@/components/pages"
 import { plexMono } from "@/lib/fonts/mono"
 import { plexSansPreload } from "@/lib/fonts/sans-preload"
 
